@@ -350,6 +350,7 @@ METHOD GoBottom() CLASS TWBrowse
           ::Skip( 1 )
       next
       ::DrawSelect()
+      ::Refresh()
 
       ::oVScroll:SetValue( ::nLen )
 
@@ -378,12 +379,13 @@ METHOD GoDown() CLASS TWBrowse
             ::nRowPos++
          else
             BrwScrollUp( ::hWnd )
-	    ::DrawLines()
+	         ::DrawLines()
          endif
       else
          ::lHitBottom = .t.
       endif
       ::DrawSelect()
+      ::Refresh()
       if ::bChange != nil
          Eval( ::bChange, Self )
       endif
@@ -432,6 +434,7 @@ METHOD GoTop() CLASS TWBrowse
       ::nRowPos = 1
       ::DrawRows()
       ::DrawSelect()
+      ::Refresh()
       if ::oVScroll != nil
          ::oVScroll:GoTop()
       endif 
@@ -460,12 +463,13 @@ METHOD GoUp() CLASS TWBrowse
             ::nRowPos--
          else
             BrwScrollDown( ::hWnd )
-	    ::DrawLines()
+	         ::DrawLines()
          endif
       else
          ::lHitTop = .t.
       endif
       ::DrawSelect()
+      ::Refresh()
       if ::bChange != nil
          Eval( ::bChange, Self )
       endif
@@ -501,6 +505,14 @@ METHOD HandleEvent( nMsg, nWParam, nLParam ) CLASS TWBrowse
    do case
       case nMsg == WM_PAINT
            return ::Paint( nWParam )
+
+      case nMsg == WM_KEYDOWN
+           if nWParam == K_DOWN
+              ::GoDown()
+           else 
+              ::GoUp()
+           endif      
+           return nil
    endcase
 
 return ::Super:HandleEvent( nMsg, nWParam, nLParam )
@@ -512,15 +524,15 @@ METHOD KeyDown( nKey ) CLASS TWBrowse
    do case
       case nKey == K_DOWN
            ::GoDown()
-	   ::oVScroll:SetValue( ::oVScroll:GetValue() + 1 )
+	        ::oVScroll:SetValue( ::oVScroll:GetValue() + 1 )
 
       case nKey == K_UP
            ::GoUp()
-	   ::oVScroll:SetValue( ::oVScroll:GetValue() - 1 )
+	        ::oVScroll:SetValue( ::oVScroll:GetValue() - 1 )
 
       case nKey == K_HOME
            ::GoTop()
-	   ::oVScroll:SetValue( 1 )
+	        ::oVScroll:SetValue( 1 )
 
       case nKey == K_END
            ::GoBottom()
@@ -533,11 +545,11 @@ METHOD KeyDown( nKey ) CLASS TWBrowse
 
       case nKey == K_LEFT
            ::GoLeft()
-	   ::oHScroll:SetValue( ::oHScroll:GetValue() - 1 )
+	        ::oHScroll:SetValue( ::oHScroll:GetValue() - 1 )
 
       case nKey == K_RIGHT
            ::GoRight()
-	   ::oHScroll:SetValue( ::oHScroll:GetValue() + 1 )
+	        ::oHScroll:SetValue( ::oHScroll:GetValue() + 1 )
    endcase
 
    if ! Empty( ::bKeyDown )
@@ -642,6 +654,7 @@ METHOD PageDown( nLines ) CLASS TWBrowse
       endcase
 
       ::DrawSelect()
+      ::Refresh()
       if ::bChange != nil
          Eval( ::bChange, Self )
       endif
@@ -683,12 +696,13 @@ METHOD PageUp( nLines ) CLASS TWBrowse
             ::Skip( -nSkipped )
             ::oVScroll:SetValue( ::oVScroll:GetValue() + nSkipped )
          endif
-	 ::DrawRows()
-	 ::DrawSelect()
+	      ::DrawRows()
+	      ::DrawSelect()
+         ::Refresh()
+
          if ::bChange != nil
             Eval( ::bChange, Self )
          endif
-
       endif
    else
       ::oVScroll:SetValue( 1 )

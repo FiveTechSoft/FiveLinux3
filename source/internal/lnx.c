@@ -340,24 +340,23 @@ gboolean PaintEvent( GtkWidget * hWnd, GdkEventExpose * event )
    return FALSE;
 }
 
+#define K_UP              5
+#define K_DOWN           24
+
 gboolean scroll_event( GtkWidget *widget, GdkEventScroll * event )
 {
-  g_print( "scroll_event\n" ); 
+   hb_vmPushSymbol( pFLH );
+   hb_vmPushNil();
+   hb_vmPushLong( WM_KEYDOWN );        // nMsg
 
   // Handle the scroll event
   switch (event->direction)
   {
     case GDK_SCROLL_UP:
-      // Scroll up logic
+      hb_vmPushLong( ( HB_ULONG ) K_DOWN );   // nWParam
       break;
     case GDK_SCROLL_DOWN:
-      // Scroll down logic
-      break;
-    case GDK_SCROLL_LEFT:
-      // Scroll left logic
-      break;
-    case GDK_SCROLL_RIGHT:
-      // Scroll right logic
+      hb_vmPushLong( ( HB_ULONG ) K_UP );   // nWParam
       break;
     case GDK_SCROLL_SMOOTH:
       // Smooth scroll logic
@@ -365,6 +364,10 @@ gboolean scroll_event( GtkWidget *widget, GdkEventScroll * event )
     default:
       return FALSE;
   }
+
+   hb_vmPushLong( ( HB_ULONG ) NULL );    // nLParam
+   hb_vmPushLong( ( HB_ULONG ) g_object_get_data( G_OBJECT( widget ), "WP" ) );
+   hb_vmFunction( 4 );
 
   // Return TRUE if the event was handled
   return TRUE;

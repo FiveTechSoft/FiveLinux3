@@ -65,7 +65,7 @@ static void gtk_browse_realize(GtkWidget *widget)
     attributes.event_mask = gtk_widget_get_events(widget) |
         GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK |
         GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK |
-        GDK_POINTER_MOTION_HINT_MASK;
+        GDK_POINTER_MOTION_HINT_MASK | GDK_KEY_PRESS_MASK;
 
     attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
 
@@ -160,6 +160,9 @@ HB_FUNC( CREATEBROWSE )
 {
    GtkBrowse * hWnd = ( GtkBrowse * ) gtk_browse_new();
 
+   g_signal_connect( hWnd, "key-press-event",
+                     G_CALLBACK (KeyPressEvent), NULL );
+
    g_signal_connect( hWnd, "button-press-event",
                      G_CALLBACK (ButtonPressEvent), NULL );
 
@@ -171,7 +174,11 @@ HB_FUNC( CREATEBROWSE )
              | GDK_BUTTON_PRESS_MASK
              | GDK_POINTER_MOTION_MASK
              | GDK_POINTER_MOTION_HINT_MASK 
-             | GDK_SCROLL_MASK );
+             | GDK_SCROLL_MASK 
+             | GDK_KEY_PRESS_MASK );
+
+   gtk_widget_set_can_focus(GTK_WIDGET(hWnd), TRUE);
+   gtk_widget_grab_focus(GTK_WIDGET(hWnd));          
 
    hb_retptr( hWnd );
 }
