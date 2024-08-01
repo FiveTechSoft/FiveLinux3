@@ -30,10 +30,13 @@ struct _GtkBrowseClass
                                    GtkAdjustment *vadjustment);
 };
 
+gboolean PaintEvent( GtkWidget * hWnd, GdkEventExpose * event );
+gboolean button_press_event(GtkWidget *hWnd, GdkEventButton *event);
+gboolean KeyPressEvent( GtkWidget * hWnd, GdkEventKey * event );
+
 G_DEFINE_TYPE (GtkBrowse, gtk_browse, GTK_TYPE_WIDGET)
 
-static void
-gtk_browse_set_scroll_adjustments (GtkBrowse *browse,
+static void gtk_browse_set_scroll_adjustments (GtkBrowse *browse,
                                    GtkAdjustment *hadjustment,
                                    GtkAdjustment *vadjustment)
 {
@@ -79,8 +82,9 @@ static void gtk_browse_class_init (GtkBrowseClass *klass)
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
   widget_class->realize = gtk_browse_realize;
-  // Connect other signals and set up other class functions here
-
+  widget_class->draw    = PaintEvent;         // paint
+  widget_class->key_press_event = KeyPressEvent;      // pulsacion tecla
+  widget_class->button_press_event = button_press_event; // click ratón
   klass->set_scroll_adjustments = gtk_browse_set_scroll_adjustments;
 
   g_signal_new ("set-scroll-adjustments",
@@ -173,11 +177,15 @@ HB_FUNC( CREATEBROWSE )
 
 HB_FUNC( BRWDRAWHEADERS ) // ( hWnd, pEvent, aHeaders, aColSizes, nColPos )
 {
-   GtkWidget * hWnd = ( GtkWidget * ) hb_parnl( 1 );
+   GtkWidget * hWnd = ( GtkWidget * ) hb_parptr( 1 );
    cairo_t *cr;
    int iCols = hb_parinfa( 3, 0 ), i, iLeft = 0, iRight;
 
-   cr = gdk_cairo_create (gtk_widget_get_window (hWnd));
+   // cr = gdk_cairo_create (gtk_widget_get_window (hWnd));
+   cr = cairo_create(gdk_window_create_similar_surface(gtk_widget_get_window(hWnd), 
+                  CAIRO_CONTENT_COLOR, 
+                  gtk_widget_get_allocated_width(hWnd), 
+                  gtk_widget_get_allocated_height(hWnd)));
 
    for( i = hb_parnl( 5 ) - 1; i < iCols; i++ )
    {
