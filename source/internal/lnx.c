@@ -340,6 +340,35 @@ gboolean PaintEvent( GtkWidget * hWnd, GdkEventExpose * event )
    return FALSE;
 }
 
+gboolean scroll_event( GtkWidget *widget, GdkEventScroll * event )
+{
+  g_print( "scroll_event\n" ); 
+
+  // Handle the scroll event
+  switch (event->direction)
+  {
+    case GDK_SCROLL_UP:
+      // Scroll up logic
+      break;
+    case GDK_SCROLL_DOWN:
+      // Scroll down logic
+      break;
+    case GDK_SCROLL_LEFT:
+      // Scroll left logic
+      break;
+    case GDK_SCROLL_RIGHT:
+      // Scroll right logic
+      break;
+    case GDK_SCROLL_SMOOTH:
+      // Smooth scroll logic
+      break;
+    default:
+      return FALSE;
+  }
+
+  // Return TRUE if the event was handled
+  return TRUE;
+}
 
 HB_FUNC( LOADDIALOG )
 {

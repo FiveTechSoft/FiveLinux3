@@ -33,6 +33,7 @@ struct _GtkBrowseClass
 gboolean PaintEvent( GtkWidget * hWnd, GdkEventExpose * event );
 gboolean button_press_event(GtkWidget *hWnd, GdkEventButton *event);
 gboolean KeyPressEvent( GtkWidget * hWnd, GdkEventKey * event );
+gboolean scroll_event( GtkWidget *widget, GdkEventScroll *event );
 
 G_DEFINE_TYPE (GtkBrowse, gtk_browse, GTK_TYPE_WIDGET)
 
@@ -85,6 +86,7 @@ static void gtk_browse_class_init (GtkBrowseClass *klass)
   widget_class->draw    = PaintEvent;         // paint
   widget_class->key_press_event = KeyPressEvent;      // pulsacion tecla
   widget_class->button_press_event = button_press_event; // click ratón
+  widget_class->scroll_event = scroll_event; // mouse wheel
   klass->set_scroll_adjustments = gtk_browse_set_scroll_adjustments;
 
   g_signal_new ("set-scroll-adjustments",
@@ -108,8 +110,7 @@ gtk_browse_init (GtkBrowse *browse)
   gtk_widget_set_has_window (GTK_WIDGET (browse), TRUE);
 }
 
-GtkWidget *
-gtk_browse_new (void)
+GtkWidget * gtk_browse_new (void)
 {
   return g_object_new (GTK_TYPE_BROWSE, NULL);
 }
@@ -118,8 +119,7 @@ gtk_browse_new (void)
 // will need to be updated to use GTK 3.0 drawing functions. 
 // Here's an example of how BRWDRAWHEADERS might be updated:
 
-void
-brw_draw_headers (GtkWidget *widget, cairo_t *cr, gchar **headers, gint *col_sizes, gint col_pos)
+void brw_draw_headers (GtkWidget *widget, cairo_t *cr, gchar **headers, gint *col_sizes, gint col_pos)
 {
   GtkBrowse *browse = GTK_BROWSE (widget);
   gint width = gtk_widget_get_allocated_width (widget);
@@ -170,7 +170,8 @@ HB_FUNC( CREATEBROWSE )
              | GDK_LEAVE_NOTIFY_MASK
              | GDK_BUTTON_PRESS_MASK
              | GDK_POINTER_MOTION_MASK
-             | GDK_POINTER_MOTION_HINT_MASK );
+             | GDK_POINTER_MOTION_HINT_MASK 
+             | GDK_SCROLL_MASK );
 
    hb_retptr( hWnd );
 }
