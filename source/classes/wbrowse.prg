@@ -1,5 +1,8 @@
 #include "FiveLinux.ch"
 
+#define K_UP          65362
+#define K_DOWN        65364
+
 //----------------------------------------------------------------------------//
 
 CLASS TWBrowse FROM TControl
@@ -507,12 +510,7 @@ METHOD HandleEvent( nMsg, nWParam, nLParam ) CLASS TWBrowse
            return ::Paint( nWParam )
 
       case nMsg == WM_KEYDOWN
-           if nWParam == K_DOWN
-              ::GoDown()
-           else 
-              ::GoUp()
-           endif      
-           return nil
+           return ::KeyDown( nWParam )
    endcase
 
 return ::Super:HandleEvent( nMsg, nWParam, nLParam )

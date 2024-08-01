@@ -340,8 +340,8 @@ gboolean PaintEvent( GtkWidget * hWnd, GdkEventExpose * event )
    return FALSE;
 }
 
-#define K_UP              5
-#define K_DOWN           24
+#define K_UP          65362
+#define K_DOWN        65364
 
 gboolean scroll_event( GtkWidget *widget, GdkEventScroll * event )
 {
@@ -353,10 +353,10 @@ gboolean scroll_event( GtkWidget *widget, GdkEventScroll * event )
   switch (event->direction)
   {
     case GDK_SCROLL_UP:
-      hb_vmPushLong( ( HB_ULONG ) K_DOWN );   // nWParam
+      hb_vmPushLong( ( HB_ULONG ) K_UP );   // nWParam
       break;
     case GDK_SCROLL_DOWN:
-      hb_vmPushLong( ( HB_ULONG ) K_UP );   // nWParam
+      hb_vmPushLong( ( HB_ULONG ) K_DOWN );   // nWParam
       break;
     case GDK_SCROLL_SMOOTH:
       // Smooth scroll logic
@@ -410,4 +410,9 @@ HB_FUNC( LOADDIALOG )
 
     // Libera la memoria utilizada por GtkBuilder
     g_object_unref(builder);
+}
+
+HB_FUNC( GPRINT )
+{
+   g_print("%s\n", hb_parc(1));
 }
