@@ -1,0 +1,105 @@
+Application
+===========
+   Path and name: /home/antonio/fivelinux/samples/testfld3 (32 bits)
+   Time from start: 0 hours 0 mins 11 secs 
+   Error occurred at: 08/01/24, 06:46:52
+   Error description: Error BASE/1004
+   Message not found: TFOLDER:SETSCROLL
+   Args:
+     [   1] = O   Object
+
+Stack Calls
+===========
+   Called from __ERRRT_SBASE(0)
+   Called from TFOLDER:ERROR(0)
+   Called from (b)HBOBJECT(0)
+   Called from TFOLDER:MSGNOTFOUND(0)
+   Called from TFOLDER:SETSCROLL(0)
+   Called from (b)MAIN(23)
+   Called from TBUTTON:CLICK(119)
+   Called from TBUTTON:HANDLEEVENT(130)
+   Called from _FLH(342)
+   Called from WINRUN(0)
+   Called from TWINDOW:ACTIVATE(169)
+   Called from MAIN(48)
+
+Variables in use
+================
+   Procedure     Type   Value
+   ==========================
+   __ERRRT_SBASE
+     Param   1:    O    Class: ERROR
+   TFOLDER:ERROR
+     Param   1:    N    13
+     Param   2:    N    1004
+     Param   3:    C    "Message not found"
+     Param   4:    C    "TFOLDER:SETSCROLL"
+     Param   5:    N    1
+     Param   6:    O    Class: TFOLDER
+     Local   1:    U    nil
+     Local   2:    U    
+   (b)HBOBJECT
+     Param   1:    C    "Message not found"
+     Param   2:    C    "TFOLDER"
+     Param   3:    C    "SETSCROLL"
+     Param   4:    N    1004
+   TFOLDER:MSGNOTFOUND
+     Param   1:    O    Class: TFOLDER
+     Param   2:    C    "SETSCROLL"
+     Param   3:    L    .T.
+   TFOLDER:SETSCROLL
+     Param   1:    C    "SETSCROLL"
+     Param   2:    L    .T.
+   (b)MAIN
+     Param   1:    L    .T.
+   TBUTTON:CLICK
+     Param   1:    O    Class: TBUTTON
+   TBUTTON:HANDLEEVENT
+   _FLH
+     Param   1:    N    1
+     Param   2:    N    0
+     Param   3:    N    0
+   WINRUN
+     Param   1:    N    1
+     Param   2:    N    0
+     Param   3:    N    0
+     Param   4:    N    7
+     Local   1:    O    Class: TBUTTON
+   TWINDOW:ACTIVATE
+   MAIN
+     Param   1:    U    nil
+     Param   2:    U    nil
+     Param   3:    U    nil
+     Param   4:    L    .F.
+     Param   5:    L    .F.
+     Param   6:    U    nil
+
+Linked RDDs
+===========
+   DBF
+   DBFFPT
+   DBFBLOB
+   DBFNTX
+
+DataBases in use
+================
+
+Classes in use:
+===============
+     1 ERROR
+     2 HBCLASS
+     3 HBOBJECT
+     4 TWINDOW
+     5 TCONTROL
+     6 TFOLDER
+     7 TDIALOG
+     8 TBUTTON
+
+Memory Analysis
+===============
+      13 Static variables
+
+   Dynamic memory consume:
+      Actual  Value:          0 bytes
+      Highest Value:          0 bytes
+
