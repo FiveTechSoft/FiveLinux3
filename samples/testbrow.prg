@@ -14,10 +14,10 @@ function Main()
       HEADERS "First", "Last", "Street", "City", "State", "Zip" ;
       FIELDS  First, Last, Street, City, State, Zip
 
-   oBrw:nClrPane = { | nRow, lSelected | If( ! lSelected, If( OrdKeyNo() % 2 == 0, CLR_GREEN, CLR_WHITE ), nil ) } 
-   oBrw:nClrText = { | nRow, lSelected | If( ! lSelected, If( OrdKeyNo() % 2 == 0, CLR_YELLOW, CLR_BLACK ), nil ) } 
+   oBrw:nClrPane = { | nRow, lSelected | If( ! lSelected, If( OrdKeyNo() % 2 == 0, CLR_GREEN, CLR_CYAN ), CLR_BLUE ) } 
+   oBrw:nClrText = { | nRow, lSelected | If( ! lSelected, If( OrdKeyNo() % 2 == 0, CLR_YELLOW, CLR_BLACK ), CLR_WHITE ) } 
 
-   @ 30, 2 BUTTON "_Ok" OF oWnd ACTION oWnd:End()
+   @ 31, 2 BUTTON "_Ok" OF oWnd ACTION oWnd:End()
 
    ACTIVATE WINDOW oWnd
 

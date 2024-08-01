@@ -189,11 +189,7 @@ HB_FUNC( BRWDRAWHEADERS ) // ( hWnd, pEvent, aHeaders, aColSizes, nColPos )
    cairo_t *cr;
    int iCols = hb_parinfa( 3, 0 ), i, iLeft = 0, iRight;
 
-   // cr = gdk_cairo_create (gtk_widget_get_window (hWnd));
-   cr = cairo_create(gdk_window_create_similar_surface(gtk_widget_get_window(hWnd), 
-                  CAIRO_CONTENT_COLOR, 
-                  gtk_widget_get_allocated_width(hWnd), 
-                  gtk_widget_get_allocated_height(hWnd)));
+   cr = gdk_cairo_create(gtk_widget_get_window(hWnd));
 
    for( i = hb_parnl( 5 ) - 1; i < iCols; i++ )
    {
@@ -207,14 +203,14 @@ HB_FUNC( BRWDRAWHEADERS ) // ( hWnd, pEvent, aHeaders, aColSizes, nColPos )
          if( i + 1 == iCols )
             iRight = gtk_widget_get_allocated_width (hWnd) - iLeft;
 
-         // Utiliza funciones de Cairo para dibujar.
          cairo_rectangle (cr, iLeft, 0, iRight, 21);
          cairo_set_source_rgb (cr, 1, 1, 1); // Blanco
          cairo_fill (cr);
 
          pango_layout_set_text( GTK_BROWSE( hWnd )->layout,
-                            hb_parvc( 3, i + 1 ), -1 );
+                                hb_parvc( 3, i + 1 ), -1 );
 
+         cairo_set_source_rgb(cr, 0, 0, 0); // Negro
          cairo_move_to (cr, iLeft + 6, 2);
          pango_cairo_show_layout (cr, GTK_BROWSE( hWnd )->layout);
 
@@ -223,6 +219,7 @@ HB_FUNC( BRWDRAWHEADERS ) // ( hWnd, pEvent, aHeaders, aColSizes, nColPos )
    }
 
    cairo_destroy (cr);
+   gtk_widget_queue_draw(hWnd);
 }
 
 HB_FUNC( BRWROWCOUNT ) // ( hWnd )
@@ -242,42 +239,42 @@ HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColo
    GtkStyleContext *context = gtk_widget_get_style_context(hWnd);
    cairo_t *cr = gdk_cairo_create(gtk_widget_get_window(hWnd));
 
-   if (hb_pcount() > 6 && !HB_ISNIL(7))
-   {
-      GdkRGBA color;
-      guint32 rgb_value = (guint32)hb_parnl(7);
-      color.red   = ((rgb_value >> 16) & 0xFF) / 255.0;
-      color.green = ((rgb_value >> 8) & 0xFF) / 255.0;
-      color.blue  = (rgb_value & 0xFF) / 255.0;
-      color.alpha = 1.0;
-      gdk_cairo_set_source_rgba(cr, &color);
-   }
-
    GtkAllocation allocation;
    gtk_widget_get_allocation(hWnd, &allocation);
    if ((rect.y + rect.height) >= allocation.height)
       rect.height = allocation.height - rect.y;
 
-   gtk_style_context_save(context);
-   if (hb_parl(6))
+   // Dibujar el fondo
+   if (hb_pcount() > 6 && !HB_ISNIL(7))
    {
-      gtk_style_context_set_state(context, gtk_style_context_get_state(context) | GTK_STATE_FLAG_SELECTED);
+      GdkRGBA color;
+      guint32 rgb_value = (guint32)hb_parnl(7);
+      color.blue  = ((rgb_value >> 16) & 0xFF) / 255.0;
+      color.green = ((rgb_value >> 8) & 0xFF) / 255.0;
+      color.red   = (rgb_value & 0xFF) / 255.0;
+      color.alpha = 1.0;
+      gdk_cairo_set_source_rgba(cr, &color);
+      cairo_rectangle(cr, rect.x, rect.y, rect.width, rect.height);
+      cairo_fill(cr);
    }
    else
    {
-      gtk_style_context_set_state(context, gtk_style_context_get_state(context) & ~GTK_STATE_FLAG_SELECTED);
+      gtk_style_context_save(context);
+      if (hb_parl(6))
+      {
+         gtk_style_context_set_state(context, gtk_style_context_get_state(context) | GTK_STATE_FLAG_SELECTED);
+      }
+      else
+      {
+         gtk_style_context_set_state(context, gtk_style_context_get_state(context) & ~GTK_STATE_FLAG_SELECTED);
+      }
+      gtk_render_background(context, cr, rect.x, rect.y, rect.width, rect.height);
+      gtk_style_context_restore(context);
    }
-   gtk_render_background(context, cr, hb_parnl(3), hb_parnl(2), hb_parnl(5), rect.height);
-   gtk_style_context_restore(context);
 
+   // Dibujar el texto
    PangoLayout *layout = ((GtkBrowse *)hWnd)->layout;
    pango_layout_set_text(layout, hb_parc(4), -1);
-
-   if (hb_pcount() > 6 && !HB_ISNIL(7))
-   {
-      GdkRGBA color = {1.0, 1.0, 1.0, 1.0}; // White color
-      gdk_cairo_set_source_rgba(cr, &color);
-   }
 
    if (hb_pcount() > 7 && !HB_ISNIL(8))
    {
@@ -293,13 +290,13 @@ HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColo
       pango_layout_set_attributes(layout, attrs);
    }
 
+   gdk_cairo_set_source_rgba(cr, &(GdkRGBA){0, 0, 0, 1}); // Color de texto negro por defecto
    gtk_render_layout(context, cr, rect.x, rect.y, layout);
 
    if (hb_pcount() > 7 && !HB_ISNIL(8))
    {
-      attrs = pango_attr_list_new();
-      pango_attr_list_insert(attrs, pango_attr_foreground_new(0, 0, 0));
-      pango_layout_set_attributes(layout, attrs);
+      pango_attr_list_unref(attrs);
+      pango_layout_set_attributes(layout, NULL);
    }
 
    cairo_destroy(cr);
