@@ -57,7 +57,7 @@ static function ErrorDialog( oError )
 
    cErrorLog += "Application" + CRLF
    cErrorLog += "===========" + CRLF
-   cErrorLog += "   Path and name: " + HB_ArgV( 0 ) + " (32 bits)" + HB_OsNewLine()
+   cErrorLog += "   Path and name: " + HB_ArgV( 0 ) + If( IsApp64(), " (64 bits)", " (32 bits)" ) + HB_OsNewLine()
    // + GetModuleFileName( GetInstance() )
 
    cErrorLog += "   Time from start: " + TimeFromStart() + CRLF
@@ -183,21 +183,21 @@ static function ErrorDialog( oError )
    endif
 
    DEFINE DIALOG oDlg TITLE DLG_TITLE ;
-      SIZE 400, 350
+      SIZE 415, 350
 
    @ 1, 4 SAY oSay PROMPT cMessage OF oDlg SIZE 300, 40
 
-   @ 5, 1 SAY "Stack List"
+   @ 7, 1 SAY "Stack List"
 
-   @ 7, 1 LISTBOX oLbx VAR n ITEMS aStack OF oDlg SIZE 380, 246
+   @ 9, 1 LISTBOX oLbx VAR n ITEMS aStack OF oDlg SIZE 380, 246
 
-   @ 5, 27 BUTTON "See error.log file" SIZE 120, 20 ;
+   @ 5, 23 BUTTON "See error.log file" SIZE 120, 20 ;
       ACTION WinExec( "gedit", "error.log" )
 
    if nButtons == 2
-      @ 32,  9 BUTTON "_Quit" OF oDlg ACTION oDlg:End()
+      @ 34,  9 BUTTON "_Quit" OF oDlg ACTION oDlg:End()
    else
-      @ 32, 15 BUTTON "_Quit" OF oDlg ACTION oDlg:End()
+      @ 34, 15 BUTTON "_Quit" OF oDlg ACTION oDlg:End()
    endif
 
    if oError:CanRetry

@@ -18,7 +18,7 @@ function MsgSelect( aItems, cValue, cTitle )
 
    DEFAULT cTitle := "Please, select"
 
-   DEFINE DIALOG oDlg TITLE cTitle SIZE 280, 220
+   DEFINE DIALOG oDlg TITLE cTitle SIZE 280, 250
 
    @  1, 2 LISTBOX cValue ITEMS aItems SIZE 181, 110 OF oDlg
 
