@@ -18,14 +18,14 @@ function MsgSelect( aItems, cValue, cTitle )
 
    DEFAULT cTitle := "Please, select"
 
-   DEFINE DIALOG oDlg TITLE cTitle SIZE 220, 150
+   DEFINE DIALOG oDlg TITLE cTitle SIZE 280, 220
 
-   @  1, 2 LISTBOX cValue ITEMS aItems SIZE 180, 95 OF oDlg
+   @  1, 2 LISTBOX cValue ITEMS aItems SIZE 181, 110 OF oDlg
 
-   @ 12, 2 BUTTON "_OK" OF oDlg SIZE 80, 25 ;
+   @ 13, 2 BUTTON "_OK" OF oDlg SIZE 80, 25 ;
      ACTION oDlg:End()
 
-   @ 12, 12 BUTTON "_Cancel" OF oDlg SIZE 80, 25 ;
+   @ 13, 12 BUTTON "_Cancel" OF oDlg SIZE 80, 25 ;
      ACTION ( cValue := nil, oDlg:End() )
 
    ACTIVATE DIALOG oDlg CENTERED
