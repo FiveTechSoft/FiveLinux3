@@ -62,13 +62,14 @@ HB_FUNC( LBXSETITEMS ) // ( hWnd, aItems )
     g_list_free( children );
 
     // Ahora añadimos los nuevos elementos
-    for( i = 0; i < iLen; i++ ) {
+    for( i = 0; i < iLen; i++ ) 
+    {
         GtkWidget * label = gtk_label_new( hb_parvc( 2, i + 1 ) );
         gtk_widget_set_halign( label, GTK_ALIGN_START );
         gtk_list_box_insert( listbox, label, -1 );
-        g_object_set_data( G_OBJECT( label ), "index", GINT_TO_POINTER( i + 1 ) );
+        GtkListBoxRow *row = gtk_list_box_get_row_at_index( listbox, i );
+        g_object_set_data( G_OBJECT( row ), "index", GINT_TO_POINTER( i + 1 ) );
     }
-
     gtk_widget_show_all( hWnd );
 }
 

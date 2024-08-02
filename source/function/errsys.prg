@@ -183,21 +183,21 @@ static function ErrorDialog( oError )
    endif
 
    DEFINE DIALOG oDlg TITLE DLG_TITLE ;
-      SIZE 415, 350
+      SIZE 450, 468
 
    @ 1, 4 SAY oSay PROMPT cMessage OF oDlg SIZE 300, 40
 
    @ 7, 1 SAY "Stack List"
 
-   @ 9, 1 LISTBOX oLbx VAR n ITEMS aStack OF oDlg SIZE 380, 246
+   @ 9, 1 LISTBOX oLbx VAR n ITEMS aStack OF oDlg SIZE 380, 236
 
    @ 5, 23 BUTTON "See error.log file" SIZE 120, 20 ;
       ACTION WinExec( "gedit", "error.log" )
 
    if nButtons == 2
-      @ 34,  9 BUTTON "_Quit" OF oDlg ACTION oDlg:End()
+      @ 33.5,  9 BUTTON "_Quit" OF oDlg ACTION oDlg:End()
    else
-      @ 34, 15 BUTTON "_Quit" OF oDlg ACTION oDlg:End()
+      @ 33.5, 15 BUTTON "_Quit" OF oDlg ACTION oDlg:End()
    endif
 
    if oError:CanRetry
