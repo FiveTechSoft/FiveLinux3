@@ -43,42 +43,52 @@ void MsgInfo(char *msg);
 
 HB_FUNC(CREATEBTN)
 {
-    GtkWidget *hToolBar = GTK_WIDGET(g_object_get_data(G_OBJECT(hb_parnl(1)), "hToolBar"));
-    GtkWidget *hWnd;
-    GtkWidget *button;
+    GtkWidget *hToolBar = GTK_WIDGET(g_object_get_data(G_OBJECT(hb_parptr(1)), "hToolBar"));
+    GtkToolItem *toolItem = NULL;
+    GtkWidget *button = NULL;
 
+    // Agregar separador si se solicita
     if (hb_parl(4))
     {
-        GtkWidget *separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
-        gtk_container_add(GTK_CONTAINER(hToolBar), separator);
+        toolItem = gtk_separator_tool_item_new();
+        if (toolItem) {
+            gtk_toolbar_insert(GTK_TOOLBAR(hToolBar), toolItem, -1);
+        }
     }
 
-    if (HB_ISCHAR(5))
+    button = gtk_button_new_with_label(hb_parc(2));
+
+    // Añadir imagen si se proporciona
+    if (HB_ISCHAR(5) && g_file_test(hb_parc(5), G_FILE_TEST_EXISTS))
     {
         GtkWidget *image = gtk_image_new_from_file(hb_parc(5));
-        button = gtk_button_new();
-        gtk_button_set_image(GTK_BUTTON(button), image);
-        gtk_button_set_label(GTK_BUTTON(button), hb_parc(2));
-        gtk_widget_set_tooltip_text(button, "Private");
+        if (image) {
+            gtk_button_set_image(GTK_BUTTON(button), image);
+            gtk_widget_set_tooltip_text(button, "Private");
+        }
     }
     else if (HB_ISCHAR(3))
     {
-        button = gtk_button_new_with_label(hb_parc(2));
         GtkWidget *image = gtk_image_new_from_icon_name(hb_parc(3), GTK_ICON_SIZE_BUTTON);
-        gtk_button_set_image(GTK_BUTTON(button), image);
-    }
-    else
-    {
-        button = gtk_button_new_with_label(hb_parc(2));
+        if (image) {
+            gtk_button_set_image(GTK_BUTTON(button), image);
+        }
     }
 
-    gtk_container_add(GTK_CONTAINER(hToolBar), button);
-    hWnd = button;
+    // Crear GtkToolItem y añadir el botón
+    toolItem = gtk_tool_item_new();
+    gtk_container_add(GTK_CONTAINER(toolItem), button);
 
-    g_signal_connect(G_OBJECT(hWnd), "clicked",
-                     G_CALLBACK(ClickEvent), NULL);
+    // Añadir el GtkToolItem a la barra de herramientas
+    gtk_toolbar_insert(GTK_TOOLBAR(hToolBar), toolItem, -1);
 
-    hb_retptr(hWnd);
+    // Conectar la señal "clicked"
+    if (GTK_IS_BUTTON(button)) {
+        g_signal_connect(G_OBJECT(button), "clicked",
+                         G_CALLBACK(ClickEvent), NULL);
+    }
+
+    hb_retptr(button);
 }
 
 HB_FUNC(BTNSETTEXT)
