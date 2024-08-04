@@ -22,8 +22,7 @@ HB_FUNC( CREATEBAR )
    // Cambio en GTK 3.0: gtk_toolbar_set_style() está obsoleto
    // En su lugar, usamos CSS para estilizar la barra de herramientas
    GtkCssProvider *provider = gtk_css_provider_new();
-   gtk_css_provider_load_from_data(provider,
-       "toolbar { -gtk-icon-size: large-toolbar; }", -1, NULL);
+   gtk_toolbar_set_icon_size(GTK_TOOLBAR(hToolBar), GTK_ICON_SIZE_LARGE_TOOLBAR);
    gtk_style_context_add_provider(
        gtk_widget_get_style_context(hToolBar),
        GTK_STYLE_PROVIDER(provider),

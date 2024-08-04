@@ -39,7 +39,7 @@ HB_FUNC( APPENDMENU )
 
    if( HB_ISCHAR( 3 ) )
    {
-      hItem = gtk_menu_item_new_with_label( "" );
+      hItem = gtk_menu_item_new();
       GtkWidget * box = gtk_box_new( GTK_ORIENTATION_HORIZONTAL, 6 );
       GtkWidget * image = gtk_image_new_from_icon_name( hb_parc( 3 ), GTK_ICON_SIZE_MENU );
       GtkWidget * label = gtk_label_new( hb_parc( 2 ) );

@@ -31,7 +31,7 @@ function BuildMenu()
       MENUITEM "Cuentas"
       MENUITEM "_Diarios"
       MENU
-         MENUITEM "Nuevo" RESOURCE "gtk-new" ACTION DiarioNuevo()
+         MENUITEM "Nuevo" RESOURCE "document-new" ACTION DiarioNuevo()
       ENDMENU
    ENDMENU
 
