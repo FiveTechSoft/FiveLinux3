@@ -13,12 +13,6 @@ static void ButtonOk( GtkWidget *hWnd, gpointer data )
    gtk_main_quit();
 }
 
-static void ButtonCancel( GtkWidget *hWnd, gpointer data )
-{
-   gtk_widget_destroy( hWnd );
-   gtk_main_quit();
-}
-
 static gboolean DeleteEvent( GtkWidget *hWnd, GdkEvent *event, gpointer data )
 {
    gtk_widget_destroy( hWnd );
