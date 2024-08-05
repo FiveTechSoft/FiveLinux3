@@ -1,4 +1,5 @@
 #include <hbapi.h>
+#undef HB_DEPRECATED
 #include <gtk/gtk.h>
 
 void ScrollBarChanged(GtkAdjustment * adjustment, gpointer user_data);
