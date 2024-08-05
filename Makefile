@@ -99,5 +99,5 @@ C_OBJS = ./objc/bars.o        \
 	ar rc ./lib/libfivec.a $@
 
 ./objc/%.o : ./source/internal/%.c
-	gcc -D_HARBOUR_ `pkg-config --cflags gtk+-3.0` `pkg-config --cflags libglade-2.0` -I./../harbour/include -I./include -Wall -c -o $@ $<
+	gcc -D_HARBOUR_ `pkg-config --cflags gtk+-3.0` -I./../harbour/include -I./include -Wall -c -o $@ $<
 	ar rc ./lib/libfivec.a $@
