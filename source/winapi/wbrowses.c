@@ -1,4 +1,5 @@
 #include <hbapi.h>
+#undef HB_DEPRECATED
 #include <gtk/gtk.h>
 
 #define GTK_TYPE_BROWSE            (gtk_browse_get_type ())
@@ -30,7 +31,7 @@ struct _GtkBrowseClass
                                    GtkAdjustment *vadjustment);
 };
 
-gboolean PaintEvent( GtkWidget * hWnd, GdkEventExpose * event );
+gboolean PaintEvent( GtkWidget * hWnd, cairo_t *cr );
 gboolean button_press_event(GtkWidget *hWnd, GdkEventButton *event);
 gboolean KeyPressEvent( GtkWidget * hWnd, GdkEventKey * event );
 gboolean scroll_event( GtkWidget *widget, GdkEventScroll *event );
@@ -46,7 +47,6 @@ static void gtk_browse_set_scroll_adjustments (GtkBrowse *browse,
 
 static void gtk_browse_realize(GtkWidget *widget)
 {
-    GtkBrowse *browse = GTK_BROWSE(widget);
     GdkWindowAttr attributes;
     gint attributes_mask;
 

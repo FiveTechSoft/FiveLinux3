@@ -1,6 +1,7 @@
 #include <msgs.h>
 #include <hbapi.h>
 #include <hbvm.h>
+#undef HB_DEPRECATED
 #include <gtk/gtk.h>
 
 int MsgInfo( char * szMsg );
@@ -333,12 +334,12 @@ void MenuItemSelect(GtkMenuItem *hMenuItem, gpointer user_data)
     hb_vmFunction(4);
 }
 
-gboolean PaintEvent( GtkWidget * hWnd, GdkEventExpose * event )
+gboolean PaintEvent( GtkWidget * hWnd, cairo_t * cr )
 {
    hb_vmPushSymbol( pFLH );
    hb_vmPushNil();
    hb_vmPushLong( WM_PAINT );             // nMsg
-   hb_vmPushLong( ( HB_ULONG ) event );   // nWParam
+   hb_vmPushLong( ( HB_ULONG ) cr );   // nWParam
    hb_vmPushLong( ( HB_ULONG ) NULL );    // nLParam
    hb_vmPushLong( ( HB_ULONG ) g_object_get_data( G_OBJECT( hWnd ), "WP" ) );
    hb_vmFunction( 4 );
