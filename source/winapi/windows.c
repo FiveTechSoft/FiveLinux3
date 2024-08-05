@@ -1,4 +1,5 @@
 #include <hbapi.h>
+#undef HB_DEPRECATED
 #include <gtk/gtk.h>
 
 int MsgInfo( char * szMsg );
@@ -89,12 +90,12 @@ HB_FUNC( GETFOCUS )
 
 HB_FUNC( SETPROP )
 {
-   g_object_set_data( G_OBJECT( hb_parptr( 1 ) ), hb_parc( 2 ), hb_parnl( 3 ) );
+   g_object_set_data( G_OBJECT( hb_parptr( 1 ) ), hb_parc( 2 ), ( gpointer ) hb_parnl( 3 ) );
 }
 
 HB_FUNC( GETPROP )
 {
-   hb_retnl( g_object_get_data( G_OBJECT( hb_parptr( 1 ) ), hb_parc( 2 ) ) );
+   hb_retnl( ( HB_LONG ) g_object_get_data( G_OBJECT( hb_parptr( 1 ) ), hb_parc( 2 ) ) );
 }
 
 HB_FUNC( GETLEFT )
@@ -135,10 +136,17 @@ HB_FUNC( CTRLSETSIZE )
    gtk_widget_set_size_request( ( GtkWidget * ) hb_parptr( 1 ), hb_parnl( 2 ), hb_parnl( 3 ) );
 }
 
-HB_FUNC( CTRLSETPOS )
+HB_FUNC( CTRLSETPOS ) 
 {
-   gtk_widget_set_margin_start( ( GtkWidget * ) hb_parptr( 1 ), hb_parnl( 3 ) );
-   gtk_widget_set_margin_top( ( GtkWidget * ) hb_parptr( 1 ), hb_parnl( 2 ) );
+    long margin_start = hb_parnl(3);
+    long margin_top = hb_parnl(2);
+    
+    // Limitar los valores a G_MAXINT16
+    margin_start = (margin_start > G_MAXINT16) ? G_MAXINT16 : margin_start;
+    margin_top = (margin_top > G_MAXINT16) ? G_MAXINT16 : margin_top;
+    
+    gtk_widget_set_margin_start( (GtkWidget *) hb_parptr(1), (int)margin_start );
+    gtk_widget_set_margin_top( (GtkWidget *) hb_parptr(1), (int)margin_top );
 }
 
 HB_FUNC( WNDSETSIZE )
@@ -227,9 +235,32 @@ HB_FUNC( BRINGWINDOWTOTOP )
    gtk_window_set_keep_above( GTK_WINDOW( hWnd ), hb_parl( 2 ) );
 }
 
-HB_FUNC( SETFONT )
+void set_widget_font_from_pango(GtkWidget *widget, PangoFontDescription *pango_font)
 {
-   GtkWidget * hWnd  = ( GtkWidget * ) hb_parptr( 1 );
+    GtkCssProvider *provider = gtk_css_provider_new();
+    GtkStyleContext *context = gtk_widget_get_style_context(widget);
 
-   gtk_widget_override_font( hWnd, ( PangoFontDescription * ) hb_parptr( 2 ) );
+    // Convertir PangoFontDescription a string
+    char *font_string = pango_font_description_to_string(pango_font);
+
+    // Crear el CSS
+    char *css = g_strdup_printf("* { font: %s; }", font_string);
+    
+    gtk_css_provider_load_from_data(provider, css, -1, NULL);
+    
+    g_free(css);
+    g_free(font_string);
+
+    gtk_style_context_add_provider(context,
+                                   GTK_STYLE_PROVIDER(provider),
+                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+    g_object_unref(provider);
+}
+
+HB_FUNC( CTRLSETFONT )
+{
+    GtkWidget *hWnd = (GtkWidget *)hb_parptr(1);
+    PangoFontDescription *pango_font = (PangoFontDescription *)hb_parptr(2);
+    set_widget_font_from_pango(hWnd, pango_font);
 }

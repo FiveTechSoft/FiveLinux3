@@ -14,9 +14,9 @@ function Main()
 
    DEFINE BUTTONBAR oBar OF oWnd
 
-   DEFINE BUTTON OF oBar RESOURCE "gtk-new"
+   DEFINE BUTTON OF oBar RESOURCE "document-new"
 
-   DEFINE BUTTON OF oBar RESOURCE "gtk-quit" GROUP ACTION oWnd:End()
+   DEFINE BUTTON OF oBar RESOURCE "application-exit" GROUP ACTION oWnd:End()
 
    ACTIVATE WINDOW oWnd MAXIMIZED
 
@@ -31,7 +31,7 @@ function BuildMenu()
       MENUITEM "Cuentas"
       MENUITEM "_Diarios"
       MENU
-         MENUITEM "Nuevo" RESOURCE "gtk-new" ACTION DiarioNuevo()
+         MENUITEM "Nuevo" RESOURCE "document-new" ACTION DiarioNuevo()
       ENDMENU
    ENDMENU
 

@@ -23,15 +23,15 @@ function Main()
 
    DEFINE BUTTONBAR oBar OF oWndMain
 
-   DEFINE BUTTON OF oBar PROMPT "New" RESOURCE "gtk-new" ;
+   DEFINE BUTTON OF oBar PROMPT "New" RESOURCE "document-new" ;
       ACTION New()
 
-   DEFINE BUTTON OF oBar PROMPT "Open" RESOURCE "gtk-open" ;
+   DEFINE BUTTON OF oBar PROMPT "Open" RESOURCE "document-open" ;
       ACTION OpenFile()
 
-   DEFINE BUTTON OF oBar PROMPT "Preferences" RESOURCE "gtk-preferences" GROUP
+   DEFINE BUTTON OF oBar PROMPT "Preferences" RESOURCE "document-preferences" GROUP
 
-   DEFINE BUTTON OF oBar PROMPT "Exit" RESOURCE "gtk-quit" GROUP ;
+   DEFINE BUTTON OF oBar PROMPT "Exit" RESOURCE "application-exit" GROUP ;
       ACTION oWndMain:End()
 
    DEFINE MSGBAR OF oWndMain PROMPT "FiveDbu"
@@ -246,10 +246,10 @@ function OpenFile( cFileName )
 
    DEFINE BUTTONBAR oBar OF oWnd
 
-   DEFINE BUTTON OF oBar PROMPT "Add" RESOURCE "gtk-add" ;
+   DEFINE BUTTON OF oBar PROMPT "Add" RESOURCE "list-add" ;
       ACTION ( ( oBrw:cAlias )->( DbAppend() ), oBrw:GoBottom(), oBrw:Refresh(), oBrw:SetFocus() )
 
-   DEFINE BUTTON OF oBar PROMPT "Edit" RESOURCE "gtk-edit" ;
+   DEFINE BUTTON OF oBar PROMPT "Edit" RESOURCE "edit" ;
       ACTION ( cAlias )->( Edit( cFileName ) )
 
    DEFINE BUTTON OF oBar PROMPT "Del" RESOURCE "gtk-delete" ;
@@ -278,7 +278,7 @@ function OpenFile( cFileName )
                                  If( ( cAlias )->( Deleted() ), "| Deleted |", "| Not deleted |" ) + ;
                                  " RecNo: " + AllTrim( Str( ( cAlias )->( RecNo() ) ) ) + " / " + ;
                                  AllTrim( Str( ( cAlias )->( RecCount() ) ) ) + " |" ) ;
-      ON DBLCLICK ( cAlias )->( Edit( cFileName ) )
+      ON DBLCLICK ( cAlias )->( Edit( cFileName ) ) 
 
    oBrw:SetAltColors( CLR_TEXT, CLR_GRAY1, CLR_TEXT, CLR_GRAY2 )
    oBrw:SetFocus()
@@ -288,7 +288,7 @@ function OpenFile( cFileName )
    Eval( oBrw:bChange )
 
    ACTIVATE WINDOW oWnd ;
-      ON RESIZE oBrw:SetSize( nWidth - 20, nHeight - 92 )
+   //    ON RESIZE oBrw:SetSize( nWidth - 20, nHeight - 92 )
 
 return nil
 

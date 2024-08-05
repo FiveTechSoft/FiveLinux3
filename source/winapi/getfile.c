@@ -1,24 +1,23 @@
 #include <hbapi.h>
+#undef HB_DEPRECATED
 #include <gtk/gtk.h>
 
 void CheckGtkInit( void );
 
-static void ButtonOk( GtkWidget *hWnd, gpointer data )
-{
-   GtkFileChooser *chooser = GTK_FILE_CHOOSER(data);
-   hb_retc( gtk_file_chooser_get_filename( chooser ) );
+static gchar *g_selected_filename = NULL;
 
-   gtk_widget_destroy( hWnd );
+static void ButtonOk( GtkWidget *widget, gint response, gpointer user_data )
+{
+   GtkFileChooser *chooser = GTK_FILE_CHOOSER(user_data);
+   if (response == GTK_RESPONSE_ACCEPT) {
+      g_free(g_selected_filename);
+      g_selected_filename = gtk_file_chooser_get_filename(chooser);
+      g_print( g_selected_filename );
+   }
    gtk_main_quit();
 }
 
-static void ButtonCancel( GtkWidget *hWnd, gpointer data )
-{
-   gtk_widget_destroy( hWnd );
-   gtk_main_quit();
-}
-
-static gboolean DeleteEvent( GtkWidget *hWnd, GdkEvent *event, gpointer data )
+static gboolean DeleteEvent( GtkWidget *widget, GdkEvent *event, gpointer user_data )
 {
    gtk_main_quit();
    return FALSE;
@@ -42,7 +41,8 @@ HB_FUNC( CGETFILE ) // cTitle, cFileName
       "_Open", GTK_RESPONSE_ACCEPT,
       NULL);
 
-   gtk_file_chooser_set_filename( GTK_FILE_CHOOSER( hWnd ), hb_parc( 1 ) );
+   if (HB_ISCHAR( 1 ))
+      gtk_file_chooser_set_filename( GTK_FILE_CHOOSER( hWnd ), hb_parc( 1 ) );
 
    g_signal_connect( hWnd, "response", G_CALLBACK( ButtonOk ), hWnd );
    g_signal_connect( hWnd, "delete_event", G_CALLBACK( DeleteEvent ), NULL );
@@ -52,4 +52,14 @@ HB_FUNC( CGETFILE ) // cTitle, cFileName
    gtk_widget_show_all( hWnd );
 
    gtk_main();
+
+   if (g_selected_filename) {
+      hb_retc( g_selected_filename );
+      g_free(g_selected_filename);
+      g_selected_filename = NULL;
+   } else {
+      hb_ret();
+   }
+
+   gtk_widget_destroy( hWnd );
 }

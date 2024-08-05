@@ -48,6 +48,12 @@ HB_FUNC( WINRUN )
    // }
 }
 
+HB_FUNC( SYSREFRESH )
+{
+   while( gtk_events_pending() )
+      gtk_main_iteration();
+}
+
 gint ConfigureEvent( GtkWidget * hWnd, GdkEventConfigure * event )
 {
    /*  if (!gc) {
