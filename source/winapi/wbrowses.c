@@ -437,9 +437,19 @@ HB_FUNC( BRWSCROLLUP )
    GtkAllocation allocation;
    cairo_t *cr;
    cairo_surface_t *surface;
+   GdkWindow *window;
+   GdkDrawingContext *draw_context;
+   cairo_region_t *region;
 
    gtk_widget_get_allocation(hWnd, &allocation);
-   cr = gdk_cairo_create(gtk_widget_get_window(hWnd));
+   window = gtk_widget_get_window(hWnd);
+
+   // Crear la región para todo el widget
+   region = cairo_region_create_rectangle(&(cairo_rectangle_int_t){0, 0, allocation.width, allocation.height});
+   
+   // Comenzar el frame de dibujo
+   draw_context = gdk_window_begin_draw_frame(window, region);
+   cr = gdk_drawing_context_get_cairo_context(draw_context);
 
    // Create a surface from the window
    surface = cairo_surface_create_similar(cairo_get_target(cr),
@@ -459,7 +469,12 @@ HB_FUNC( BRWSCROLLUP )
    cairo_fill(cr);
 
    cairo_surface_destroy(surface);
-   cairo_destroy(cr);
+
+   // Finalizar el frame de dibujo
+   gdk_window_end_draw_frame(window, draw_context);
+
+   // Liberar la región
+   cairo_region_destroy(region);
 }
 
 HB_FUNC( BRWSCROLLDOWN )
@@ -468,9 +483,19 @@ HB_FUNC( BRWSCROLLDOWN )
    GtkAllocation allocation;
    cairo_t *cr;
    cairo_surface_t *surface;
+   GdkWindow *window;
+   GdkDrawingContext *draw_context;
+   cairo_region_t *region;
 
    gtk_widget_get_allocation(hWnd, &allocation);
-   cr = gdk_cairo_create(gtk_widget_get_window(hWnd));
+   window = gtk_widget_get_window(hWnd);
+
+   // Crear la región para todo el widget
+   region = cairo_region_create_rectangle(&(cairo_rectangle_int_t){0, 0, allocation.width, allocation.height});
+   
+   // Comenzar el frame de dibujo
+   draw_context = gdk_window_begin_draw_frame(window, region);
+   cr = gdk_drawing_context_get_cairo_context(draw_context);
 
    // Create a surface from the window
    surface = cairo_surface_create_similar(cairo_get_target(cr),
@@ -490,5 +515,10 @@ HB_FUNC( BRWSCROLLDOWN )
    cairo_fill(cr);
 
    cairo_surface_destroy(surface);
-   cairo_destroy(cr);
+
+   // Finalizar el frame de dibujo
+   gdk_window_end_draw_frame(window, draw_context);
+
+   // Liberar la región
+   cairo_region_destroy(region);
 }
