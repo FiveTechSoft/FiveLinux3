@@ -1,4 +1,5 @@
 #include <hbapi.h>
+#undef HB_DEPRECATED
 #include <gtk/gtk.h>
 
 gboolean button_press_event(GtkWidget *widget, GdkEventButton *event, gpointer user_data);
@@ -82,5 +83,5 @@ HB_FUNC(FLDGETPAGE)
 {
    GtkNotebook *hWnd = (GtkNotebook *)hb_parptr(1);
 
-   hb_retptr(gtk_notebook_get_current_page(hWnd) + 1);
+   hb_retnl(gtk_notebook_get_current_page(hWnd) + 1);
 }

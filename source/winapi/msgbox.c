@@ -1,5 +1,6 @@
 #include <hbapi.h>
 #include <hbapiitm.h>
+#undef HB_DEPRECATED
 #include <gtk/gtk.h>
 
 void CheckGtkInit(void);
@@ -94,12 +95,10 @@ int MsgYesNo(char *szMsg, char *cTitle)
                                   GTK_MESSAGE_QUESTION,
                                   GTK_BUTTONS_NONE, "%s", szMsg);
 
-    gtk_dialog_add_button(GTK_DIALOG(hWnd), GTK_STOCK_NO, 0);
-    gtk_dialog_add_button(GTK_DIALOG(hWnd), GTK_STOCK_YES, 1);
+    gtk_dialog_add_button(GTK_DIALOG(hWnd), "_No", 0);
+    gtk_dialog_add_button(GTK_DIALOG(hWnd), "_Yes", 1);
 
     gtk_window_set_title(GTK_WINDOW(hWnd), cTitle);
-
-    // gtk_window_set_policy is deprecated in GTK 3.0, use gtk_window_set_resizable instead
     gtk_window_set_resizable(GTK_WINDOW(hWnd), FALSE);
     gtk_window_set_position(GTK_WINDOW(hWnd), GTK_WIN_POS_CENTER);
 
@@ -126,12 +125,10 @@ int MsgNoYes(char *szMsg, char *cTitle)
                                   GTK_MESSAGE_QUESTION,
                                   GTK_BUTTONS_NONE, "%s", szMsg);
 
-    gtk_dialog_add_button(GTK_DIALOG(hWnd), GTK_STOCK_YES, 1);
-    gtk_dialog_add_button(GTK_DIALOG(hWnd), GTK_STOCK_NO, 0);
+    gtk_dialog_add_button(GTK_DIALOG(hWnd), "_Yes", 1);
+    gtk_dialog_add_button(GTK_DIALOG(hWnd), "_No", 0);
 
     gtk_window_set_title(GTK_WINDOW(hWnd), cTitle);
-
-    // gtk_window_set_policy is deprecated in GTK 3.0, use gtk_window_set_resizable instead
     gtk_window_set_resizable(GTK_WINDOW(hWnd), FALSE);
     gtk_window_set_position(GTK_WINDOW(hWnd), GTK_WIN_POS_CENTER);
 
@@ -261,5 +258,8 @@ HB_FUNC(MSGNOYES)
 
 HB_FUNC(MSGBEEP)
 {
-    gdk_beep();
+    GdkDisplay *display = gdk_display_get_default();
+    if (display) {
+        gdk_display_beep(display);
+    }
 }

@@ -1,4 +1,5 @@
 #include <hbapi.h>
+#undef HB_DEPRECATED
 #include <gtk/gtk.h>
 
 gboolean ClickEvent(GtkWidget *widget, GdkEventButton *event, gpointer user_data);

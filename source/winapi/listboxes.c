@@ -1,5 +1,6 @@
 #include <hbapi.h>
 #include <hbvm.h>
+#undef HB_DEPRECATED
 #include <gtk/gtk.h>
 
 void LbxChangeEvent(GtkListBox *hWnd, GtkListBoxRow *hItem, gpointer user_data);

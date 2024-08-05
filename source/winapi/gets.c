@@ -1,5 +1,6 @@
 #include <hbapi.h>
 #include <hbvm.h>
+#undef HB_DEPRECATED
 #include <gtk/gtk.h>
 
 gboolean LostFocusEvent( GtkWidget * hWnd, GdkEventFocus * event, gpointer user_data );

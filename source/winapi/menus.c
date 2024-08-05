@@ -1,4 +1,5 @@
 #include <hbapi.h>
+#undef HB_DEPRECATED
 #include <gtk/gtk.h>
 
 void MenuItemSelect( GtkMenuItem * hMenuItem, gpointer user_data );

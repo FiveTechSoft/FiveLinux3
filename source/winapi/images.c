@@ -1,4 +1,5 @@
 #include <hbapi.h>
+#undef HB_DEPRECATED
 #include <gtk/gtk.h>
 
 gboolean button_press_event( GtkWidget * hWnd, GdkEventButton * event );
