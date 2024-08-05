@@ -96,26 +96,27 @@ gint DeleteEvent( GtkWidget * hWnd, gpointer data )
    return TRUE;
 }
 
-gboolean motion_notify_event( GtkWidget * hWnd, GdkEventMotion * event )
+gboolean motion_notify_event(GtkWidget *hWnd, GdkEventMotion *event)
 {
-   int x = event->x, y = event->y;
-   GdkModifierType state;
+    int x = event->x, y = event->y;
+    GdkModifierType state;
 
-   if( gtk_widget_get_parent( hWnd ) )
-   {
-      GdkWindow *parent_window = gtk_widget_get_window(gtk_widget_get_parent(hWnd));
-      gdk_window_get_pointer(parent_window, &x, &y, &state);
-   }
+    if (gtk_widget_get_parent(hWnd))
+    {
+        GdkWindow *parent_window = gtk_widget_get_window(gtk_widget_get_parent(hWnd));
+        GdkDevice *device = gdk_event_get_device((GdkEvent*)event);
+        gdk_window_get_device_position(parent_window, device, &x, &y, &state);
+    }
 
-   hb_vmPushSymbol( pFLH );
-   hb_vmPushNil();
-   hb_vmPushLong( WM_MOUSEMOVE );    // nMsg
-   hb_vmPushLong( ( HB_ULONG ) y );  // nWParam
-   hb_vmPushLong( ( HB_ULONG ) x );  // nLParam
-   hb_vmPushLong( ( HB_ULONG ) g_object_get_data( G_OBJECT( hWnd ), "WP" ) );
-   hb_vmFunction( 4 );
+    hb_vmPushSymbol(pFLH);
+    hb_vmPushNil();
+    hb_vmPushLong(WM_MOUSEMOVE);    // nMsg
+    hb_vmPushLong((HB_ULONG)y);     // nWParam
+    hb_vmPushLong((HB_ULONG)x);     // nLParam
+    hb_vmPushLong((HB_ULONG)g_object_get_data(G_OBJECT(hWnd), "WP"));
+    hb_vmFunction(4);
 
-   return TRUE;
+    return TRUE;
 }
 
 void RadioButtonClick( GtkToggleButton * hWnd, gpointer data )
@@ -183,7 +184,7 @@ gboolean LostFocusEvent( GtkWidget *hWnd, GdkEventFocus *event, gpointer user_da
 
 HB_FUNC( LOADBUTTON )
 {
-   GtkWidget *hWnd = gtk_builder_get_object( hResources, hb_parc( 1 ) );
+   GtkWidget *hWnd = GTK_WIDGET( gtk_builder_get_object( hResources, hb_parc( 1 ) ) );
 
    g_signal_connect( hWnd, "clicked", G_CALLBACK( ClickEvent ), NULL );
 
