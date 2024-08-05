@@ -183,6 +183,7 @@ HB_FUNC( CREATEBROWSE )
    hb_retptr( hWnd );
 }
 
+/*
 HB_FUNC( BRWDRAWHEADERS ) // ( hWnd, pEvent, aHeaders, aColSizes, nColPos )
 {
    GtkWidget * hWnd = ( GtkWidget * ) hb_parptr( 1 );
@@ -220,6 +221,53 @@ HB_FUNC( BRWDRAWHEADERS ) // ( hWnd, pEvent, aHeaders, aColSizes, nColPos )
 
    cairo_destroy (cr);
    gtk_widget_queue_draw(hWnd);
+} */
+
+HB_FUNC( BRWDRAWHEADERS ) // ( hWnd, pEvent, aHeaders, aColSizes, nColPos )
+{
+    GtkWidget * hWnd = ( GtkWidget * ) hb_parptr( 1 );
+    cairo_t *cr;
+    int iCols = hb_parinfa( 3, 0 ), i, iLeft = 0, iRight;
+
+    GdkWindow *window = gtk_widget_get_window(hWnd);
+    GdkDrawingContext *context;
+    cairo_region_t *region;
+
+    region = cairo_region_create();
+    context = gdk_window_begin_draw_frame(window, region);
+    cr = gdk_drawing_context_get_cairo_context(context);
+
+    for( i = hb_parnl( 5 ) - 1; i < iCols; i++ )
+    {
+      if( iLeft < gtk_widget_get_allocated_width (hWnd) )
+      {
+         iRight = hb_parvnl( 4, i + 1 );
+
+         if( iLeft + iRight > gtk_widget_get_allocated_width (hWnd) )
+            iRight = gtk_widget_get_allocated_width (hWnd) - iLeft;
+
+         if( i + 1 == iCols )
+            iRight = gtk_widget_get_allocated_width (hWnd) - iLeft;
+
+         cairo_rectangle (cr, iLeft, 0, iRight, 21);
+         cairo_set_source_rgb (cr, 1, 1, 1); // Blanco
+         cairo_fill (cr);
+
+         pango_layout_set_text( GTK_BROWSE( hWnd )->layout,
+                                hb_parvc( 3, i + 1 ), -1 );
+
+         cairo_set_source_rgb(cr, 0, 0, 0); // Negro
+         cairo_move_to (cr, iLeft + 6, 2);
+         pango_cairo_show_layout (cr, GTK_BROWSE( hWnd )->layout);
+
+         iLeft += hb_parvnl( 4, i + 1 ) - 1;
+      }
+    }
+
+    gdk_window_end_draw_frame(window, context);
+    cairo_region_destroy(region);
+
+    gtk_widget_queue_draw(hWnd);
 }
 
 HB_FUNC( BRWROWCOUNT ) // ( hWnd )
@@ -233,16 +281,30 @@ HB_FUNC( BRWROWCOUNT ) // ( hWnd )
 HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColorBackGround )
 {
    GtkWidget * hWnd = (GtkWidget *) hb_parptr(1);
-   GdkRectangle rect = { hb_parnl(3) + 1, hb_parnl(2) + 1,
-                         hb_parnl(5) - 3, 19 };
+   GdkRectangle cell_rect = { hb_parnl(3) + 1, hb_parnl(2) + 1,
+                              hb_parnl(5) - 3, 19 };
    PangoAttrList * attrs;
    GtkStyleContext *context = gtk_widget_get_style_context(hWnd);
-   cairo_t *cr = gdk_cairo_create(gtk_widget_get_window(hWnd));
+   
+   GdkWindow *window = gtk_widget_get_window(hWnd);
+   GdkDrawingContext *draw_context;
+   cairo_region_t *region;
+   cairo_t *cr;
 
    GtkAllocation allocation;
    gtk_widget_get_allocation(hWnd, &allocation);
-   if ((rect.y + rect.height) >= allocation.height)
-      rect.height = allocation.height - rect.y;
+
+   // Usar el área completa del widget para la región
+   GdkRectangle widget_rect = { 0, 0, allocation.width, allocation.height };
+   
+   // Crear el contexto de dibujo usando el área completa del widget
+   region = cairo_region_create_rectangle(&widget_rect);
+   draw_context = gdk_window_begin_draw_frame(window, region);
+   cr = gdk_drawing_context_get_cairo_context(draw_context);
+
+   // Recortar al área de la celda
+   cairo_rectangle(cr, cell_rect.x, cell_rect.y, cell_rect.width, cell_rect.height);
+   cairo_clip(cr);
 
    // Dibujar el fondo
    if (hb_pcount() > 6 && !HB_ISNIL(7))
@@ -254,8 +316,7 @@ HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColo
       color.red   = (rgb_value & 0xFF) / 255.0;
       color.alpha = 1.0;
       gdk_cairo_set_source_rgba(cr, &color);
-      cairo_rectangle(cr, rect.x, rect.y, rect.width, rect.height);
-      cairo_fill(cr);
+      cairo_paint(cr);
    }
    else
    {
@@ -268,7 +329,7 @@ HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColo
       {
          gtk_style_context_set_state(context, gtk_style_context_get_state(context) & ~GTK_STATE_FLAG_SELECTED);
       }
-      gtk_render_background(context, cr, rect.x, rect.y, rect.width, rect.height);
+      gtk_render_background(context, cr, cell_rect.x, cell_rect.y, cell_rect.width, cell_rect.height);
       gtk_style_context_restore(context);
    }
 
@@ -291,7 +352,7 @@ HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColo
    }
 
    gdk_cairo_set_source_rgba(cr, &(GdkRGBA){0, 0, 0, 1}); // Color de texto negro por defecto
-   gtk_render_layout(context, cr, rect.x, rect.y, layout);
+   gtk_render_layout(context, cr, cell_rect.x, cell_rect.y, layout);
 
    if (hb_pcount() > 7 && !HB_ISNIL(8))
    {
@@ -299,7 +360,9 @@ HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColo
       pango_layout_set_attributes(layout, NULL);
    }
 
-   cairo_destroy(cr);
+   // Finalizar el contexto de dibujo
+   gdk_window_end_draw_frame(window, draw_context);
+   cairo_region_destroy(region);
 }
 
 HB_FUNC( BRWDRAWLINES ) // ( hWnd, aColSizes, nColPos )
@@ -310,11 +373,19 @@ HB_FUNC( BRWDRAWLINES ) // ( hWnd, aColSizes, nColPos )
    GtkStyleContext *context;
    cairo_t *cr;
    GdkWindow *window;
+   GdkDrawingContext *draw_context;
+   cairo_region_t *region;
 
    gtk_widget_get_allocation(hWnd, &allocation);
    context = gtk_widget_get_style_context(hWnd);
    window = gtk_widget_get_window(hWnd);
-   cr = gdk_cairo_create(window);
+
+   // Crear la región para todo el widget
+   region = cairo_region_create_rectangle(&(cairo_rectangle_int_t){0, 0, allocation.width, allocation.height});
+   
+   // Comenzar el frame de dibujo
+   draw_context = gdk_window_begin_draw_frame(window, region);
+   cr = gdk_drawing_context_get_cairo_context(draw_context);
 
    // Set line color
    GdkRGBA color;
@@ -353,7 +424,11 @@ HB_FUNC( BRWDRAWLINES ) // ( hWnd, aColSizes, nColPos )
    cairo_line_to(cr, allocation.width - 1, allocation.height);
    cairo_stroke(cr);
 
-   cairo_destroy(cr);
+   // Finalizar el frame de dibujo
+   gdk_window_end_draw_frame(window, draw_context);
+
+   // Liberar la región
+   cairo_region_destroy(region);
 }
 
 HB_FUNC( BRWSCROLLUP )
