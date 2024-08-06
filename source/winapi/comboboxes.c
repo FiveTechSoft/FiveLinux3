@@ -36,9 +36,40 @@ HB_FUNC( CREATECOMBOBOX )
 
 HB_FUNC( CBXSETTEXT ) // ( hWnd, cText )
 {
-   GtkWidget * hWnd = ( GtkWidget * ) hb_parptr( 1 );
-
-   gtk_combo_box_text_insert_text( ( GtkComboBoxText * ) hWnd, 0, hb_parc( 2 ) );
+    GtkWidget * hWnd = ( GtkWidget * ) hb_parptr( 1 );
+    const gchar * text = hb_parc( 2 );
+    
+    // Buscar el texto en el modelo del combobox
+    GtkTreeModel *model = gtk_combo_box_get_model(GTK_COMBO_BOX(hWnd));
+    GtkTreeIter iter;
+    gboolean valid = gtk_tree_model_get_iter_first(model, &iter);
+    gint index = -1;
+    gint current = 0;
+    
+    while (valid) {
+        gchar *item_text;
+        gtk_tree_model_get(model, &iter, 0, &item_text, -1);
+        
+        if (g_strcmp0(text, item_text) == 0) {
+            index = current;
+            g_free(item_text);
+            break;
+        }
+        
+        g_free(item_text);
+        valid = gtk_tree_model_iter_next(model, &iter);
+        current++;
+    }
+    
+    // Si se encontró el texto, seleccionarlo
+    if (index != -1) {
+        gtk_combo_box_set_active(GTK_COMBO_BOX(hWnd), index);
+    } else {
+        // Si no se encontró, podríamos añadirlo o manejarlo de otra manera
+        // Por ahora, simplemente no hacemos nada
+    }
+    
+    gtk_widget_queue_draw( hWnd );
 }
 
 HB_FUNC( CBXGETTEXT ) // ( hWnd ) --> cText

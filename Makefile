@@ -67,6 +67,7 @@ C_OBJS = ./objc/bars.o        \
 	 ./objc/mouse.o       \
 	 ./objc/msgbars.o     \
      ./objc/msgbox.o      \
+	 ./objc/printers.o    \
 	 ./objc/progress.o    \
 	 ./objc/radios.o      \
 	 ./objc/says.o        \
