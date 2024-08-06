@@ -2,47 +2,48 @@
 #undef HB_DEPRECATED
 #include <gtk/gtk.h>
 
-void CheckGtkInit( void );
+void CheckGtkInit(void);
 
-static void ButtonOk( GtkWidget *hWnd, gpointer data )
-{
-   GtkFontChooser *chooser = GTK_FONT_CHOOSER(data);
-   hb_retc( gtk_font_chooser_get_font( chooser ) );
-
-   gtk_widget_destroy( hWnd );
-   gtk_main_quit();
-}
-
-static gboolean DeleteEvent( GtkWidget *hWnd, GdkEvent *event, gpointer data )
-{
-   gtk_widget_destroy( hWnd );
-   gtk_main_quit();
-   return FALSE;
-}
-
-HB_FUNC( CHOOSEFONT ) // cTitle, cFontName
+HB_FUNC(CHOOSEFONT) // cTitle, cFontName
 {
    GtkWidget *hWndParent = NULL;
    GtkWidget *hWnd;
+   gint result;
+   char *selected_font = NULL;
 
    CheckGtkInit();
 
-   if( gtk_window_list_toplevels() )
-      hWndParent = g_list_last( gtk_window_list_toplevels() )->data;
+   GList *toplevels = gtk_window_list_toplevels();
+   if (toplevels && g_list_last(toplevels))
+      hWndParent = GTK_WIDGET(g_list_last(toplevels)->data);
 
    hWnd = gtk_font_chooser_dialog_new(
-      HB_ISCHAR( 1 ) ? hb_parc( 1 ) : "Select a font",
+      HB_ISCHAR(1) ? hb_parc(1) : "Select a font",
       GTK_WINDOW(hWndParent));
 
-   if( hb_pcount() > 1 )
-      gtk_font_chooser_set_font( GTK_FONT_CHOOSER( hWnd ), hb_parc( 2 ) );
+   if (!hWnd) {
+      hb_retc(NULL);
+      return;
+   }
 
-   g_signal_connect( hWnd, "response", G_CALLBACK( ButtonOk ), hWnd );
-   g_signal_connect( hWnd, "delete_event", G_CALLBACK( DeleteEvent ), NULL );
+   if (hb_pcount() > 1 && HB_ISCHAR(2))
+      gtk_font_chooser_set_font(GTK_FONT_CHOOSER(hWnd), hb_parc(2));
 
-   gtk_window_set_modal( GTK_WINDOW( hWnd ), TRUE );
+   gtk_window_set_modal(GTK_WINDOW(hWnd), TRUE);
 
-   gtk_widget_show_all( hWnd );
+   result = gtk_dialog_run(GTK_DIALOG(hWnd));
 
-   gtk_main();
+   if (result == GTK_RESPONSE_OK) {
+      selected_font = gtk_font_chooser_get_font(GTK_FONT_CHOOSER(hWnd));
+      if (selected_font) {
+         hb_retc(selected_font);
+         g_free(selected_font);
+      } else {
+         hb_retc(NULL);
+      }
+   } else {
+      hb_retc(NULL);
+   }
+
+   gtk_widget_destroy(hWnd);
 }
