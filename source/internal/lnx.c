@@ -57,20 +57,11 @@ HB_FUNC( SYSREFRESH )
 
 gint ConfigureEvent( GtkWidget * hWnd, GdkEventConfigure * event )
 {
-   /*  if (!gc) {
-
-                 *  This code is executed on the first configure event only,
-                 *  i.e. when the window for the drawing area is created.
-                 *  We create a new GC and allocate the colors we will use.
-
-                gc = gdk_gc_new(widget->window);
-                init_colors(widget);  } */
-
    hb_vmPushSymbol( pFLH );
    hb_vmPushNil();
    hb_vmPushLong( WM_SIZE );                    // nMsg
-   hb_vmPushLong( ( HB_ULONG ) event->width );     // nWParam
-   hb_vmPushLong( ( HB_ULONG ) event->height );    // nLParam
+   hb_vmPushLong( ( HB_ULONG ) event->width );  // nWParam
+   hb_vmPushLong( ( HB_ULONG ) event->height ); // nLParam
    hb_vmPushLong( ( HB_ULONG ) g_object_get_data( G_OBJECT( hWnd ), "WP" ) );
    hb_vmFunction( 4 );
 

@@ -260,31 +260,31 @@ METHOD HandleEvent( nMsg, nWParam, nLParam ) CLASS TWindow
 
    do case
       case nMsg == WM_CLOSE
-	   return ::End()
+	        return ::End()
 
       case nMsg == WM_KEYDOWN
            return ::KeyDown( nWParam )
 
       case nMsg == WM_MENUCMD
-	   if ::oPopup != nil
-	      ::oPopup:Command( nWParam )
-	      ::oPopup = nil
-	      return nil
-	   else
-	      return ::oMenu:Command( nWParam )
-	   endif
+           if ::oPopup != nil
+              ::oPopup:Command( nWParam )
+              ::oPopup = nil
+              return nil
+           else
+              return ::oMenu:Command( nWParam )
+           endif
 
        case nMsg == WM_LBUTTONDOWN
-	    return ::LButtonDown( nWParam, nLParam )
+	         return ::LButtonDown( nWParam, nLParam )
 
        case nMsg == WM_LDBLCLICK
             return ::LDblClick( nWParam, nLParam )       
 
        case nMsg == WM_RBUTTONDOWN
-	    return ::RButtonDown()
+	         return ::RButtonDown()
 
        case nMsg == WM_SIZE
-	    return ::ReSize( nWParam, nLParam )
+	         return ::ReSize( nWParam, nLParam )
 
        case nMsg == WM_MOUSEMOVE
             return ::MouseMove( nWParam, nLParam )
@@ -314,8 +314,12 @@ return nil
 
 METHOD ReSize( nWidth, nHeight ) CLASS TWindow
 
-   if ::bResized != nil
+   static lWorking := .F.
+
+   if ::bResized != nil .and. ! lWorking 
+      lWorking = .T. 
       Eval( ::bResized, nWidth, nHeight, Self )
+      lWorking = .F.
    endif
 
 return nil

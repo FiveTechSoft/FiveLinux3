@@ -124,16 +124,29 @@ HB_FUNC( GETHEIGHT )
 
 HB_FUNC( CTRLSETSIZE )
 {
-   GtkWidget * hViewPort = g_object_get_data( G_OBJECT( hb_parptr( 1 ) ), "hViewPort" );
-   // GtkWidget * hWnd = g_object_get_data( G_OBJECT( hb_parnl( 1 ) ), "hWnd" );
+   GtkWidget *widget = (GtkWidget *)hb_parptr(1);
+   gint width = hb_parni(2);
+   gint height = hb_parni(3);
 
-   if( hViewPort )
-      gtk_widget_set_size_request( hViewPort, hb_parnl( 2 ), hb_parnl( 3 ) );
+   gtk_widget_set_size_request(widget, width, height);
 
-   // if( hWnd )
-   //    gtk_widget_set_size_request( hWnd, hb_parnl( 2 ), hb_parnl( 3 ) );
+   // If the widget is a viewport, also set its size
+   if (GTK_IS_VIEWPORT(widget)) {
+       GtkWidget *child = gtk_bin_get_child(GTK_BIN(widget));
+       if (child) {
+           gtk_widget_set_size_request(child, width, height);
+       }
+   }
 
-   gtk_widget_set_size_request( ( GtkWidget * ) hb_parptr( 1 ), hb_parnl( 2 ), hb_parnl( 3 ) );
+    // Use CSS to set the preferred size
+    GtkStyleContext *context = gtk_widget_get_style_context(widget);
+    gchar *css = g_strdup_printf("widget { min-width: %dpx; min-height: %dpx; }", width, height);
+    GtkCssProvider *provider = gtk_css_provider_new();
+    gtk_css_provider_load_from_data(provider, css, -1, NULL);
+    gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+    g_free(css);
+    g_object_unref(provider);
 }
 
 HB_FUNC( CTRLSETPOS ) 

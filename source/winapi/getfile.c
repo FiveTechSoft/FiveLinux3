@@ -12,7 +12,6 @@ static void ButtonOk( GtkWidget *widget, gint response, gpointer user_data )
    if (response == GTK_RESPONSE_ACCEPT) {
       g_free(g_selected_filename);
       g_selected_filename = gtk_file_chooser_get_filename(chooser);
-      g_print( g_selected_filename );
    }
    gtk_main_quit();
 }

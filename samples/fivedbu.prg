@@ -246,6 +246,8 @@ function OpenFile( cFileName )
 
    DEFINE BUTTONBAR oBar OF oWnd
 
+   DEFINE BUTTON OF oBar PROMPT "Resize" ACTION oBrw:SetSize( oWnd:nWidth - 20, oWnd:nHeight - 92 )
+
    DEFINE BUTTON OF oBar PROMPT "Add" RESOURCE "list-add" ;
       ACTION ( ( oBrw:cAlias )->( DbAppend() ), oBrw:GoBottom(), oBrw:Refresh(), oBrw:SetFocus() )
 
@@ -288,7 +290,7 @@ function OpenFile( cFileName )
    Eval( oBrw:bChange )
 
    ACTIVATE WINDOW oWnd ;
-   //    ON RESIZE oBrw:SetSize( nWidth - 20, nHeight - 92 )
+      // ON RESIZE oBrw:SetSize( nWidth - 20, nHeight - 92 )
 
 return nil
 

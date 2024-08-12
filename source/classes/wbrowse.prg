@@ -144,14 +144,14 @@ METHOD New( nRow, nCol, oWnd, aHeaders, aColSizes, abFields, cAlias, nWidth,;
    if aHeaders != nil
       for n = 1 to Len( aHeaders )
          AAdd( ::aColumns, TWBColumn():New( aHeaders[ n ],,, Self ) )
-	 if ! Empty( abFields )
-	    ATail( ::aColumns ):bBlock = abFields[ n ]
-	 else
+         if ! Empty( abFields )
+            ATail( ::aColumns ):bBlock = abFields[ n ]
+         else
             ATail( ::aColumns ):bBlock = GetFieldBlock( ::cAlias, n ) 
          endif
-	 if aColSizes != nil
-	    ATail( ::aColumns ):nWidth = aColSizes[ n ]
-	 endif
+         if aColSizes != nil
+            ATail( ::aColumns ):nWidth = aColSizes[ n ]
+         endif
       next
    endif
 
@@ -511,6 +511,9 @@ METHOD HandleEvent( nMsg, nWParam, nLParam ) CLASS TWBrowse
 
       case nMsg == WM_KEYDOWN
            return ::KeyDown( nWParam )
+
+      case nMsg == WM_SIZE
+           return nil     
    endcase
 
 return ::Super:HandleEvent( nMsg, nWParam, nLParam )
