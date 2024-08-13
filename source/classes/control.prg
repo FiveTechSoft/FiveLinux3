@@ -21,11 +21,11 @@ CLASS TControl FROM TWindow
 
    METHOD LButtonDown( nRow, nCol )
 
-   METHOD nLeft() INLINE GetLeft( ::hWnd )
+   METHOD nLeft() INLINE CtrlGetPos( ::hWnd )[ 2 ]
 
    METHOD _nLeft( nLeft ) INLINE CtrlSetPos( ::hWnd, ::nTop, nLeft ) 
 
-   METHOD nTop() INLINE GetTop( ::hWnd )
+   METHOD nTop() INLINE CtrlGetPos( ::hWnd )[ 1 ]
 
    METHOD _nTop( nTop ) INLINE CtrlSetPos( ::hWnd, nTop, ::nLeft ) 
 

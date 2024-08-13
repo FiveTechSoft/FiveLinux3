@@ -128,9 +128,10 @@ HB_FUNC( CTRLSETSIZE )
    gint width = hb_parni(2);
    gint height = hb_parni(3);
 
+   // Establecer un tamaño fijo para el widget
    gtk_widget_set_size_request(widget, width, height);
 
-   // If the widget is a viewport, also set its size
+   // Si el widget es un viewport, también establecer su tamaño
    if (GTK_IS_VIEWPORT(widget)) {
        GtkWidget *child = gtk_bin_get_child(GTK_BIN(widget));
        if (child) {
@@ -138,28 +139,44 @@ HB_FUNC( CTRLSETSIZE )
        }
    }
 
-    // Use CSS to set the preferred size
-    GtkStyleContext *context = gtk_widget_get_style_context(widget);
-    gchar *css = g_strdup_printf("widget { min-width: %dpx; min-height: %dpx; }", width, height);
-    GtkCssProvider *provider = gtk_css_provider_new();
-    gtk_css_provider_load_from_data(provider, css, -1, NULL);
-    gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+   /*
+   // Usar CSS para establecer el tamaño preferido y evitar que se expanda
+   GtkStyleContext *context = gtk_widget_get_style_context(widget);
+   gchar *css = g_strdup_printf("widget { min-width: %dpx; min-height: %dpx; max-width: %dpx; max-height: %dpx; }", width, height, width, height);
+   GtkCssProvider *provider = gtk_css_provider_new();
+   gtk_css_provider_load_from_data(provider, css, -1, NULL);
+   gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
-    g_free(css);
-    g_object_unref(provider);
+   g_free(css);
+   g_object_unref(provider);
+   */
+
+   // Desactivar la expansión del widget
+   gtk_widget_set_hexpand(widget, FALSE);
+   gtk_widget_set_vexpand(widget, FALSE);
+}
+
+HB_FUNC( CTRLGETPOS )
+{
+   GtkWidget * control = GTK_WIDGET( hb_parptr( 1 ) );
+   GtkWidget * parent = gtk_widget_get_parent( GTK_WIDGET( hb_parptr( 1 ) ) );
+   gint x, y;
+
+   gtk_container_child_get( GTK_CONTAINER( parent ), control, "x", &x, "y", &y, NULL );
+
+   hb_reta( 2 );
+   hb_storvnl( y, -1, 1 );
+   hb_storvnl( x, -1, 2 );
 }
 
 HB_FUNC( CTRLSETPOS ) 
 {
-    long margin_start = hb_parnl(3);
-    long margin_top = hb_parnl(2);
-    
-    // Limitar los valores a G_MAXINT16
-    margin_start = (margin_start > G_MAXINT16) ? G_MAXINT16 : margin_start;
-    margin_top = (margin_top > G_MAXINT16) ? G_MAXINT16 : margin_top;
-    
-    gtk_widget_set_margin_start( (GtkWidget *) hb_parptr(1), (int)margin_start );
-    gtk_widget_set_margin_top( (GtkWidget *) hb_parptr(1), (int)margin_top );
+   GtkWidget *widget = (GtkWidget *)hb_parptr(1);
+   GtkWidget * parent = gtk_widget_get_parent(widget);
+   long margin_start = hb_parnl(3);
+   long margin_top = hb_parnl(2);
+
+   gtk_fixed_move(GTK_FIXED(parent), widget, (int) margin_start, (int) margin_top );
 }
 
 HB_FUNC( WNDSETSIZE )
@@ -175,9 +192,8 @@ HB_FUNC( WNDSETPOS )
 HB_FUNC( WNDGETPOS )
 {
    gint x, y;
-
    gtk_window_get_position( GTK_WINDOW( hb_parptr( 1 ) ), &x, &y );
-   
+
    hb_reta( 2 );
    hb_storvnl( x, -1, 1 );
    hb_storvnl( y, -1, 2 );
