@@ -21,7 +21,7 @@ CLASS TWBrowse FROM TControl
    DATA   oVScroll   // The related vertical scrollbar object
    DATA   oHScroll   // The related horizontal scrollbar object
    DATA   lSetVRange // checks if the vertical scrollbar has been initialized
-   DATA   nArrayAt   // array current position
+   DATA   nAt        // array current position
    DATA   oGet       // used for cell editing
    DATA   bSetValue  // A codeblock to evaluate to save a edited cell
 
@@ -157,7 +157,7 @@ METHOD New( nRow, nCol, oWnd, aHeaders, aColSizes, abFields, cAlias, nWidth,;
 
    @ nRow, nCol + nWidth + 2 SCROLLBAR ::oVScroll OF oWnd ;
       SIZE 16, nHeight PIXEL ON DOWN ::GoDown() ON UP ::GoUp() ;
-      ON THUMBPOS If( ::cAlias == "ARRAY", If( ::nArrayAt != nPos, ::GoTo( nPos ), ),;
+      ON THUMBPOS If( ::cAlias == "ARRAY", If( ::nAt != nPos, ::GoTo( nPos ), ),;
                   If( ( ::cAlias )->( OrdKeyNo() ) != nPos, ::GoTo( nPos ),) ) 
 
    if ! Empty( cAlias )
@@ -775,9 +775,9 @@ METHOD SetAltColors( nClrText, nClrPane, nClrTextS, nClrPaneS ) CLASS TWBrowse
          If( ( ::cAlias )->( OrdKeyNo() ) % 2 == 0, nClrText, nClrTextS ), nil ) } 
    else
       ::nClrPane = { | nRow, lSelected | If( ! lSelected,;
-                     If( ::nArrayAt % 2 == 0, nClrPane, nClrPaneS ), nil ) } 
+                     If( ::nAt % 2 == 0, nClrPane, nClrPaneS ), nil ) } 
       ::nClrText = { | nRow, lSelected | If( ! lSelected,;
-                     If( ::nArrayAt % 2 == 0, nClrText, nClrTextS ), nil ) } 
+                     If( ::nAt % 2 == 0, nClrText, nClrTextS ), nil ) } 
    endif
 
 return nil
@@ -787,16 +787,16 @@ return nil
 METHOD SetArray( aArray ) CLASS TWBrowse
 
    if ::cAlias != "ARRAY"
-      ::nArrayAt  = 1    
+      ::nAt  = 1    
    endif
 
    ::cAlias    = "ARRAY"
    ::bLogicLen = { || ::nLen := Len( aArray ) }
-   ::bGoTop    = { || ::nArrayAt := 1 }
-   ::bGoBottom = { || ::nArrayAt := Eval( ::bLogicLen, Self ) }
-   ::bSkip     = { | nSkip, nOld | nOld := ::nArrayAt, ::nArrayAt += nSkip,;
-                  ::nArrayAt := Min( Max( ::nArrayAt, 1 ), Eval( ::bLogicLen, Self ) ),;
-                  ::nArrayAt - nOld }
+   ::bGoTop    = { || ::nAt := 1 }
+   ::bGoBottom = { || ::nAt := Eval( ::bLogicLen, Self ) }
+   ::bSkip     = { | nSkip, nOld | nOld := ::nAt, ::nAt += nSkip,;
+                  ::nAt := Min( Max( ::nAt, 1 ), Eval( ::bLogicLen, Self ) ),;
+                  ::nAt - nOld }
    ::oVScroll:SetRange( 1, Len( aArray ), ::nRowCount / Len( aArray ) )
             
    if ::oGet != nil

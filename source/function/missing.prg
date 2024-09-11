@@ -21,3 +21,11 @@ return nil
 function StringToLiteral( u )
 
 return cValToChar( u )
+
+function RGB( nRed, nGreen, nBlue )
+
+   nRed   := Min( 255, Max( 0, Int( nRed   ) ) )
+   nGreen := Min( 255, Max( 0, Int( nGreen ) ) )
+   nBlue  := Min( 255, Max( 0, Int( nBlue  ) ) )
+
+return ( nRed * 65536 ) + ( nGreen * 256 ) + nBlue
