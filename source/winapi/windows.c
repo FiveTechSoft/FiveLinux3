@@ -289,7 +289,7 @@ void set_widget_font_from_pango(GtkWidget *widget, PangoFontDescription *pango_f
 
 HB_FUNC( CTRLSETFONT )
 {
-    GtkWidget *hWnd = (GtkWidget *)hb_parptr(1);
-    PangoFontDescription *pango_font = (PangoFontDescription *)hb_parptr(2);
-    set_widget_font_from_pango(hWnd, pango_font);
+   GtkWidget * hWnd = ( GtkWidget * ) hb_parptr( 1 );
+   
+   set_widget_font_from_pango( hWnd, ( PangoFontDescription * ) hb_parptr( 2 ) );
 }
