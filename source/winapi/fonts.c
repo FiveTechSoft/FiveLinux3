@@ -4,8 +4,7 @@
 
 HB_FUNC( CREATEFONT )
 {
-   PangoFontDescription * hFont =
-      pango_font_description_from_string( hb_parc( 1 ) );
+   PangoFontDescription * hFont = pango_font_description_from_string( hb_parc( 1 ) );
 
    hb_retptr( hFont );
 }

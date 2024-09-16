@@ -264,32 +264,47 @@ HB_FUNC( BRINGWINDOWTOTOP )
    gtk_window_set_keep_above( GTK_WINDOW( hWnd ), hb_parl( 2 ) );
 }
 
-void set_widget_font_from_pango(GtkWidget *widget, PangoFontDescription *pango_font)
+static void set_widget_font_from_pango(GtkWidget *widget, PangoFontDescription *font_desc)
 {
-    GtkCssProvider *provider = gtk_css_provider_new();
-    GtkStyleContext *context = gtk_widget_get_style_context(widget);
+    if (widget != NULL && font_desc != NULL)
+    {
+        // Obtiene la familia de la fuente
+        const gchar *family = pango_font_description_get_family(font_desc);
+        
+        // Obtiene el peso de la fuente
+        PangoWeight weight = pango_font_description_get_weight(font_desc);
+        const gchar *weight_str = (weight == PANGO_WEIGHT_BOLD) ? "bold" : "normal";
 
-    // Convertir PangoFontDescription a string
-    char *font_string = pango_font_description_to_string(pango_font);
+        // Obtiene el estilo de la fuente (normal, cursiva, etc.)
+        PangoStyle style = pango_font_description_get_style(font_desc);
+        const gchar *style_str = (style == PANGO_STYLE_ITALIC) ? "italic" : "normal";
 
-    // Crear el CSS
-    char *css = g_strdup_printf("* { font: %s; }", font_string);
-    
-    gtk_css_provider_load_from_data(provider, css, -1, NULL);
-    
-    g_free(css);
-    g_free(font_string);
+        // Obtiene el tamaño de la fuente en puntos
+        int size = pango_font_description_get_size(font_desc) / PANGO_SCALE;  // PANGO_SCALE convierte el tamaño a puntos
 
-    gtk_style_context_add_provider(context,
-                                   GTK_STYLE_PROVIDER(provider),
-                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+        // Crea la cadena CSS con el formato adecuado
+        gchar *css = g_strdup_printf("* { font-family: '%s'; font-weight: %s; font-style: %s; font-size: %dpt; }",
+                                     family, weight_str, style_str, size);
 
-    g_object_unref(provider);
+        // Crea un proveedor CSS y carga la cadena CSS
+        GtkCssProvider *provider = gtk_css_provider_new();
+        gtk_css_provider_load_from_data(provider, css, -1, NULL);
+
+        // Obtiene el contexto de estilo del widget
+        GtkStyleContext *context = gtk_widget_get_style_context(widget);
+
+        // Añade el proveedor CSS al contexto del widget con prioridad de usuario
+        gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+        // Libera memoria
+        g_free(css);
+        g_object_unref(provider);
+    }
 }
 
 HB_FUNC( CTRLSETFONT )
 {
    GtkWidget * hWnd = ( GtkWidget * ) hb_parptr( 1 );
-   
+
    set_widget_font_from_pango( hWnd, ( PangoFontDescription * ) hb_parptr( 2 ) );
 }
