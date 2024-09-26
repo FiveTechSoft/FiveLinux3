@@ -12,6 +12,10 @@ return ATail( aMenus )
 
 function MenuAddItem( cPrompt, bAction, cResName )
 
+   if Empty( cPrompt )
+      cPrompt = "-"
+   endif   
+
    ATail( aMenus ):Add( TMenuItem():New( cPrompt, bAction, cResName ) )
 
 return nil

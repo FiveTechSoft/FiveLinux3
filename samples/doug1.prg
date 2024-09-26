@@ -15,6 +15,8 @@ FUNCTION Main()
 DEFINE WINDOW oWnd TITLE "File Match Software - (c) Finalysis 2007" ;
 MENU BldInMenu()
 
+oWnd:oMenu:SelItem( 1 )
+
 ACTIVATE WINDOW oWnd MAXIMIZED
 
 RETURN
@@ -27,6 +29,10 @@ MENU lomMenu
    MENUITEM "_File"
    MENU
       // MENUITEM "&Match" ACTION oChecker:ShowProDlg()
+      MENUITEM "_Open"
+      MENUITEM "_Save"
+      MENUITEM "Save _as"
+      SEPARATOR
       MENUITEM "_Exit" ACTION oWnd:End()
    ENDMENU
    MENUITEM "_Help"
