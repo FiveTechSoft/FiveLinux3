@@ -124,36 +124,11 @@ HB_FUNC( GETHEIGHT )
 
 HB_FUNC( CTRLSETSIZE )
 {
-   GtkWidget *widget = (GtkWidget *)hb_parptr(1);
-   gint width = hb_parni(2);
-   gint height = hb_parni(3);
+   GtkWidget * widget = ( GtkWidget * ) hb_parptr( 1 );
+   long width = hb_parnl( 2 );
+   long height = hb_parnl( 3 );
 
-   // Establecer un tamaño fijo para el widget
-   gtk_widget_set_size_request(widget, width, height);
-
-   // Si el widget es un viewport, también establecer su tamaño
-   if (GTK_IS_VIEWPORT(widget)) {
-       GtkWidget *child = gtk_bin_get_child(GTK_BIN(widget));
-       if (child) {
-           gtk_widget_set_size_request(child, width, height);
-       }
-   }
-
-   /*
-   // Usar CSS para establecer el tamaño preferido y evitar que se expanda
-   GtkStyleContext *context = gtk_widget_get_style_context(widget);
-   gchar *css = g_strdup_printf("widget { min-width: %dpx; min-height: %dpx; max-width: %dpx; max-height: %dpx; }", width, height, width, height);
-   GtkCssProvider *provider = gtk_css_provider_new();
-   gtk_css_provider_load_from_data(provider, css, -1, NULL);
-   gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-
-   g_free(css);
-   g_object_unref(provider);
-   */
-
-   // Desactivar la expansión del widget
-   gtk_widget_set_hexpand(widget, FALSE);
-   gtk_widget_set_vexpand(widget, FALSE);
+   gtk_widget_set_size_request( widget, ( int ) width, ( int ) height );
 }
 
 HB_FUNC( CTRLGETPOS )
@@ -187,6 +162,7 @@ HB_FUNC( WNDSETSIZE )
 HB_FUNC( WNDSETPOS )
 {
    gtk_window_move( GTK_WINDOW( hb_parptr( 1 ) ), hb_parnl( 3 ), hb_parnl( 2 ) );
+   // gdk_window_move( gtk_widget_get_window( hb_parptr( 1 ) ), hb_parnl( 3 ), hb_parnl( 2 ) );
 }
 
 HB_FUNC( WNDGETPOS )
