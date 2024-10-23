@@ -124,11 +124,23 @@ HB_FUNC( GETHEIGHT )
 
 HB_FUNC( CTRLSETSIZE )
 {
-   GtkWidget * widget = ( GtkWidget * ) hb_parptr( 1 );
-   long width = hb_parnl( 2 );
-   long height = hb_parnl( 3 );
+   char cstr_css[ 300 ];
+   GtkWidget * hWidget = GTK_WIDGET( hb_parptr( 1 ) );
+   const gchar * type = g_type_name( G_OBJECT_TYPE( hWidget ) );
+   GtkCssProvider * css;
+   GtkStyleContext * context;
 
-   gtk_widget_set_size_request( widget, ( int ) width, ( int ) height );
+   if( type && ( g_str_equal( type, "GtkEntry" ) ) ) 
+      gtk_entry_set_width_chars( GTK_ENTRY( hWidget ), 1 );       
+
+   sprintf( cstr_css, "* { min-height: %lipx; min-width: %lipx; }", hb_parnl( 3 ), hb_parnl( 2 ) );   
+   
+   css = gtk_css_provider_new();
+   gtk_css_provider_load_from_data( css, cstr_css, -1, NULL ); 
+   
+   context = gtk_widget_get_style_context( hWidget );   
+   gtk_style_context_add_provider( context, GTK_STYLE_PROVIDER( css ), GTK_STYLE_PROVIDER_PRIORITY_USER );
+   g_object_unref( css );  
 }
 
 HB_FUNC( CTRLGETPOS )
