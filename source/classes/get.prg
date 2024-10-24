@@ -66,6 +66,8 @@ METHOD New( nRow, nCol, oWnd, bSetGet, cPicture, nWidth, nHeight, bWhen,;
 
    if ! Empty( oFont )
       ::SetFont( oFont )
+   else
+      ::SetFont( oFontDefault )
    endif
 
    ::Link()
