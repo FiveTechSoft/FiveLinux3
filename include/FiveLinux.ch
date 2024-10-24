@@ -248,14 +248,16 @@ extern ErrorLink
 #xcommand @ <nRow>, <nCol> IMAGE [ <oImg> ] ;
              [ <file: FILENAME, FILE, DISK> <cFileName> ] ;
              [ <of: OF, WINDOW, DIALOG> <oWnd> ] ;
-	     [ SIZE <nWidth>, <nHeight> ] ;
-	     [ <update: UPDATE> ] ;
-	     [ <design: DESIGN> ] ;       
-	     [ <pixel: PIXEL> ] ;       
-	  => ;
+	         [ SIZE <nWidth>, <nHeight> ] ;
+	         [ <update: UPDATE> ] ;
+	         [ <design: DESIGN> ] ;       
+	         [ <pixel: PIXEL> ] ;       
+	         [ <adjust: ADJUST> ] ;       
+	         [ <noborder: NOBORDER> ] ;       
+	      => ;
              [ <oImg> := ] TImage():New( <nRow>, <nCol>, [<oWnd>],;
-	     <cFileName>, <nWidth>, <nHeight>, <.update.>, <(oImg)>,;
-             <.design.>, <.pixel.> )
+	         <cFileName>, <nWidth>, <nHeight>, <.update.>, <(oImg)>,;
+             <.design.>, <.pixel.>, <.adjust.>, <.noborder.> )
 
 #xcommand @ <nRow>, <nCol> LISTBOX [ <oLbx> VAR ] <cnVar> ;
              [ <of: OF, WINDOW, DIALOG> <oWnd> ] ;
