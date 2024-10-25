@@ -33,8 +33,8 @@ CLASS TControl FROM TWindow
 
    METHOD Refresh() INLINE ::SetText( cValToChar( Eval( ::bSetGet ) ) )
 
-   METHOD SetFont( oFont ) INLINE If( ::oFont != nil, ::oFont:End(),),;
-                           ::oFont := oFont, CtrlSetFont( ::hWnd, oFont:hFont )
+   METHOD SetFont( oFont ) INLINE If( oFont != nil, ( If( ::oFont != nil, ::oFont:End(),),;
+                           ::oFont := oFont, CtrlSetFont( ::hWnd, oFont:hFont ) ),)
 
    METHOD SetPos( nTop, nLeft ) INLINE CtrlSetPos( ::hWnd, nTop, nLeft )
 

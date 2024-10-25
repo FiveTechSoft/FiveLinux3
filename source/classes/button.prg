@@ -50,7 +50,7 @@ METHOD New( nRow, nCol, cText, oWnd, bAction, nWidth, nHeight, bValid,;
    if ! Empty( oFont )
       ::SetFont( oFont )
    else
-      ::SetFont( oFontDefault )
+      ::SetFont( GetFontDefault() )
    endif
 
    ::Link()

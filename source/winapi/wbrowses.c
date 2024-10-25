@@ -310,10 +310,10 @@ HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColo
    if (hb_pcount() > 6 && !HB_ISNIL(7))
    {
       GdkRGBA color;
-      guint32 rgb_value = (guint32)hb_parnl(7);
-      color.blue  = ((rgb_value >> 16) & 0xFF) / 255.0;
-      color.green = ((rgb_value >> 8) & 0xFF) / 255.0;
-      color.red   = (rgb_value & 0xFF) / 255.0;
+      guint32 rgb_value = (guint32) hb_parnl(7);
+      color.blue  = rgb_value / 65536; // ((rgb_value >> 16) & 0xFF) / 255.0;
+      color.green = ( rgb_value - ( color.blue * 65536 ) ) / 256; // ((rgb_value >> 8) & 0xFF) / 255.0;
+      color.red   = rgb_value - ( color.blue * 65536 ) - ( color.green * 256 ); // (rgb_value & 0xFF) / 255.0;
       color.alpha = 1.0;
       gdk_cairo_set_source_rgba(cr, &color);
       cairo_paint(cr);
@@ -341,9 +341,12 @@ HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColo
    {
       guint32 color = hb_parnl(8);
       GdkRGBA rgba;
-      rgba.red   = ((color >> 16) & 0xFF) / 255.0;
-      rgba.green = ((color >> 8) & 0xFF) / 255.0;
-      rgba.blue  = (color & 0xFF) / 255.0;
+      // rgba.red   = ((color >> 16) & 0xFF) / 255.0;
+      // rgba.green = ((color >> 8) & 0xFF) / 255.0;
+      // rgba.blue  = (color & 0xFF) / 255.0;
+      rgba.blue  = color / 65536; 
+      rgba.green = ( color - ( rgba.blue * 65536 ) ) / 256; 
+      rgba.red   = color - ( rgba.blue * 65536 ) - ( rgba.green * 256 ); 
       rgba.alpha = 1.0;
 
       attrs = pango_attr_list_new();

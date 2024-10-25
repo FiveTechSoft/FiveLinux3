@@ -41,7 +41,7 @@ METHOD New( nRow, nCol, oWnd, cText, nWidth, nHeight, lUpdate, oFont,;
    if oFont != nil
       ::SetFont( oFont )
    else
-      ::SetFont( oFontDefault )
+      ::SetFont( GetFontDefault() )
    endif
 
    ::Link()
