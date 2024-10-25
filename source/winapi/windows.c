@@ -124,23 +124,41 @@ HB_FUNC( GETHEIGHT )
 
 HB_FUNC( CTRLSETSIZE )
 {
-   char cstr_css[ 300 ];
    GtkWidget * hWidget = GTK_WIDGET( hb_parptr( 1 ) );
    const gchar * type = g_type_name( G_OBJECT_TYPE( hWidget ) );
-   GtkCssProvider * css;
-   GtkStyleContext * context;
 
    if( type && ( g_str_equal( type, "GtkEntry" ) ) ) 
-      gtk_entry_set_width_chars( GTK_ENTRY( hWidget ), 1 );       
+   {
+	   char cstr_css[ 300 ];
+	   GtkCssProvider * css;
+	   GtkStyleContext * context;
 
-   sprintf( cstr_css, "* { min-height: %lipx; min-width: %lipx; }", hb_parnl( 3 ), hb_parnl( 2 ) );   
-   
-   css = gtk_css_provider_new();
-   gtk_css_provider_load_from_data( css, cstr_css, -1, NULL ); 
-   
-   context = gtk_widget_get_style_context( hWidget );   
-   gtk_style_context_add_provider( context, GTK_STYLE_PROVIDER( css ), GTK_STYLE_PROVIDER_PRIORITY_USER );
-   g_object_unref( css );  
+      gtk_entry_set_width_chars( GTK_ENTRY( hWidget ), 1 );       
+	   sprintf( cstr_css, "* { min-height: %lipx; min-width: %lipx; }", hb_parnl( 3 ), hb_parnl( 2 ) );   
+   	css = gtk_css_provider_new();
+	   gtk_css_provider_load_from_data( css, cstr_css, -1, NULL ); 
+
+	   context = gtk_widget_get_style_context( hWidget );   
+	   gtk_style_context_add_provider( context, GTK_STYLE_PROVIDER( css ), GTK_STYLE_PROVIDER_PRIORITY_USER );
+	   g_object_unref( css );  
+	} 
+   else 
+   {
+	   gint width = hb_parni( 2 );
+	   gint height = hb_parni( 3 );
+
+	   gtk_widget_set_size_request( hWidget, width, height );
+
+	   if( GTK_IS_VIEWPORT( hWidget ) ) 
+      {
+		   GtkWidget *child = gtk_bin_get_child( GTK_BIN( hWidget ) );
+	      if( child ) 
+	   	   gtk_widget_set_size_request( child, width, height );
+	   }
+	}
+
+	gtk_widget_set_hexpand( hWidget, FALSE );
+	gtk_widget_set_vexpand( hWidget, FALSE );
 }
 
 HB_FUNC( CTRLGETPOS )
