@@ -201,12 +201,12 @@ static function ErrorDialog( oError )
    endif
 
    if oError:CanRetry
-      @ 32, If( nButtons == 2, 22, 16 ) BUTTON "_Retry" ;
+      @ 33.5, If( nButtons == 2, 22, 16 ) BUTTON "_Retry" ;
          OF oDlg ACTION ( lRet  := .t., oDlg:End() )
    endif
 
    if oError:CanDefault
-      @ 32, 6 BUTTON "_Default"  OF oDlg ACTION ( lRet  := .f., oDlg:End() )
+      @ 33.5, 6 BUTTON "_Default"  OF oDlg ACTION ( lRet  := .f., oDlg:End() )
    endif
 
    ACTIVATE DIALOG oDlg CENTERED
