@@ -307,13 +307,20 @@ HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColo
    cairo_clip(cr);
 
    // Dibujar el fondo
-   if (hb_pcount() > 6 && !HB_ISNIL(7))
+   guint32 nColorFondo = -1;
+   if (hb_parl(6)) {
+      nColorFondo = 3381759;
+   } else if (hb_pcount() > 6 && !HB_ISNIL(7)) {
+      nColorFondo = (guint32) hb_parnl(7);
+   }
+
+   if (nColorFondo >= 0)
    {
       GdkRGBA color;
-      guint32 rgb_value = (guint32) hb_parnl(7);
-      color.blue  = ((rgb_value >> 16) & 0xFF) / 255.0;
+      guint32 rgb_value = nColorFondo;
+      color.red  = ((rgb_value >> 16) & 0xFF) / 255.0;
       color.green = ((rgb_value >> 8) & 0xFF) / 255.0;
-      color.red   = (rgb_value & 0xFF) / 255.0;
+      color.blue   = (rgb_value & 0xFF) / 255.0;
       color.alpha = 1.0;
       gdk_cairo_set_source_rgba(cr, &color);
       cairo_paint(cr);
@@ -338,8 +345,8 @@ HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColo
    pango_layout_set_text(layout, hb_parc(4), -1);
 
    if (hb_pcount() > 7 && !HB_ISNIL(8))
-   {
-      guint32 color = hb_parnl(8);
+    {
+      guint32 color = (guint32) hb_parnl(8);
       GdkRGBA rgba;
       rgba.red   = ((color >> 16) & 0xFF) / 255.0;
       rgba.green = ((color >> 8) & 0xFF) / 255.0;
