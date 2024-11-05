@@ -230,6 +230,11 @@ HB_FUNC( WNDENABLE )
    gtk_widget_set_sensitive( ( GtkWidget * ) hb_parptr( 1 ), hb_parl( 2 ) );
 }
 
+HB_FUNC( WNDENABLED )
+{
+   hb_retl( gtk_widget_get_sensitive( ( GtkWidget * ) hb_parptr( 1 ) ) );
+}
+
 HB_FUNC( WNDHIDE )
 {
    gtk_widget_hide( ( GtkWidget * ) hb_parptr( 1 ) );

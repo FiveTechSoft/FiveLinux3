@@ -56,6 +56,8 @@ CLASS TWindow
 
    METHOD Enable() INLINE WndEnable( ::hWnd, .t. )
 
+   METHOD lEnabled() INLINE WndEnabled( ::hWnd )
+
    METHOD End()
 
    METHOD GenLocals()
