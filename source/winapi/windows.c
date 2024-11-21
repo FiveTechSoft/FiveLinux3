@@ -191,8 +191,7 @@ HB_FUNC( WNDSETSIZE )
 
 HB_FUNC( WNDSETPOS )
 {
-   gtk_window_move( GTK_WINDOW( hb_parptr( 1 ) ), hb_parnl( 3 ), hb_parnl( 2 ) );
-   // gdk_window_move( gtk_widget_get_window( hb_parptr( 1 ) ), hb_parnl( 3 ), hb_parnl( 2 ) );
+   gtk_window_move( GTK_WINDOW( hb_parptr( 1 ) ), hb_parnl( 2 ), hb_parnl( 3 ) );
 }
 
 HB_FUNC( WNDGETPOS )
