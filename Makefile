@@ -5,13 +5,13 @@ $(shell mkdir -p obj objc)
 all : ./lib/libfive.a ./lib/libfivec.a
 
 PRG_OBJS = ./obj/bar.o        \
-       ./obj/button.o     \
-       ./obj/checkbox.o   \
-	   ./obj/combobox.o   \
-	   ./obj/control.o    \
-	   ./obj/database.o   \
-	   ./obj/dbtools.o    \
-	   ./obj/dialog.o     \
+	./obj/button.o     \
+	./obj/checkbox.o   \
+	./obj/combobox.o   \
+	./obj/control.o    \
+	./obj/database.o   \
+	./obj/dbtools.o    \
+	./obj/dialog.o     \
 	   ./obj/errsys.o     \
 	   ./obj/file.o       \
 	   ./obj/filename.o   \
