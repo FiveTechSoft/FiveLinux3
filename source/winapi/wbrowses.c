@@ -281,8 +281,8 @@ HB_FUNC( BRWROWCOUNT ) // ( hWnd )
 HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColorBackGround )
 {
    GtkWidget * hWnd = (GtkWidget *) hb_parptr(1);
-   GdkRectangle cell_rect = { hb_parnl(3) + 1, hb_parnl(2) + 1,
-                              hb_parnl(5) - 3, 19 };
+   GdkRectangle cell_rect = { hb_parnl(3), hb_parnl(2),
+                              hb_parnl(5) - 1, 18 }; // 19
    PangoAttrList * attrs;
    GtkStyleContext *context = gtk_widget_get_style_context(hWnd);
    
