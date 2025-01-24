@@ -249,8 +249,8 @@ HB_FUNC( BRWDRAWHEADERS ) // ( hWnd, pEvent, aHeaders, aColSizes, nColPos )
          if( i + 1 == iCols )
             iRight = gtk_widget_get_allocated_width (hWnd) - iLeft;
 
-         cairo_rectangle (cr, iLeft, 0, iRight, 21);
-         cairo_set_source_rgb (cr, 1, 1, 1); // Blanco
+         cairo_rectangle (cr, iLeft, 0, iRight - 2, 19 ); // 21
+         cairo_set_source_rgb (cr, 0.0, 0.8, 1.0); // Celeste
          cairo_fill (cr);
 
          pango_layout_set_text( GTK_BROWSE( hWnd )->layout,
@@ -281,8 +281,8 @@ HB_FUNC( BRWROWCOUNT ) // ( hWnd )
 HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColorBackGround )
 {
    GtkWidget * hWnd = (GtkWidget *) hb_parptr(1);
-   GdkRectangle cell_rect = { hb_parnl(3), hb_parnl(2),
-                              hb_parnl(5) - 1, 18 }; // 19
+   GdkRectangle cell_rect = { hb_parnl(3) - 1, hb_parnl(2) - 1,
+                              hb_parnl(5), 19 }; 
    PangoAttrList * attrs;
    GtkStyleContext *context = gtk_widget_get_style_context(hWnd);
    
@@ -399,6 +399,8 @@ HB_FUNC( BRWDRAWLINES ) // ( hWnd, aColSizes, nColPos )
    GdkRGBA color;
    gtk_style_context_get_color(context, gtk_style_context_get_state(context), &color);
    gdk_cairo_set_source_rgba(cr, &color);
+
+   cairo_set_line_width(cr, 1.0);
 
    // Draw horizontal lines
    for (i = 2; i < allocation.height / 20; i++)
