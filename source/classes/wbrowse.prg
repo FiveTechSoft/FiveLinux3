@@ -102,6 +102,10 @@ METHOD New( nRow, nCol, oWnd, aHeaders, aColSizes, abFields, cAlias, nWidth,;
 
    local n
 
+   if Empty( cAlias )
+      SELECT 0
+   endif   
+
    DEFAULT cAlias := Alias(), nWidth := 460, nHeight := 240, lUpdate := .f.,;
            oWnd := GetWndDefault(), lPixel := .F., lDesign := .F.
 
