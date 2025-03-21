@@ -1,5 +1,6 @@
 #include "FiveLinux.ch"
 
+#define K_SPACE          32
 #define K_UP          65362
 #define K_DOWN        65364
 
@@ -24,6 +25,9 @@ CLASS TWBrowse FROM TControl
    DATA   nAt        // array current position
    DATA   oGet       // used for cell editing
    DATA   bSetValue  // A codeblock to evaluate to save a edited cell
+   DATA   aRowsChoosen INIT {} // An array that holds the choosen rows numbers
+   DATA   nClrPaneChoosen INIT CLR_YELLOW // The color of the choosen row pane
+   DATA   nClrTextChoosen INIT CLR_BLACK // The color of the choosen row text
 
    CLASSDATA aProperties INIT { "aColumns", "cVarName", "nClrText",;
                                 "nClrPane", "nTop", "nLeft", "nWidth", "nHeight",;
@@ -103,7 +107,7 @@ METHOD New( nRow, nCol, oWnd, aHeaders, aColSizes, abFields, cAlias, nWidth,;
    local n
 
    if Empty( cAlias )
-      SELECT 0
+      cAlias = Alias() // SELECT 0
    endif   
 
    DEFAULT cAlias := Alias(), nWidth := 460, nHeight := 240, lUpdate := .f.,;
@@ -239,18 +243,19 @@ METHOD DrawLine( nRow, lSelected ) CLASS TWBrowse
    local n := ::nColPos, nColPos := 1, nWidth := ::nWidth,;
               nCols := Len( ::aColumns )
    local hWnd := ::hWnd, nRowAct := ::nRowPos
+   local lChoosen := AScan( ::aRowsChoosen, ( ::cAlias )->( OrdKeyNo() ) ) != 0
 
    DEFAULT nRow := ::nRowPos, lSelected := .f.
 
    while nColPos < nWidth .and. n <= nCols
       BrwDrawCell( hWnd, ( 20 * nRow ) + 1, nColPos,;
-                   RTrim( cValToChar( Eval( ::aColumns[ n ]:bBlock ) ) ),;
+         RTrim( cValToChar( Eval( ::aColumns[ n ]:bBlock ) ) ),;
 		   If( n == Len( ::aColumns ) .or. ;
 		   nColPos + ::aColumns[ n ]:nWidth > ::nWidth,;
 		   ::nWidth - nColPos - 1,;
-		   ::aColumns[ n ]:nWidth - 2 ), lSelected,;
-                   If( ValType( ::nClrPane ) == "B", Eval( ::nClrPane, nRow, lSelected ), ::nClrPane ),;
-                   If( ValType( ::nClrText ) == "B", Eval( ::nClrText, nRow, lSelected ), ::nClrText ) )
+		   ::aColumns[ n ]:nWidth - 2 ), lSelected .and. ! lChoosen,;
+         If( ! lChoosen, If( ValType( ::nClrPane ) == "B", Eval( ::nClrPane, nRow, lSelected ), ::nClrPane ), ::nClrPaneChoosen ),;
+         If( ! lChoosen, If( ValType( ::nClrText ) == "B", Eval( ::nClrText, nRow, lSelected ), ::nClrText ), ::nClrTextChoosen ) )
       nColPos += ::aColumns[ n++ ]:nWidth - 1
    end
 
@@ -555,6 +560,14 @@ METHOD KeyDown( nKey ) CLASS TWBrowse
       case nKey == K_RIGHT
            ::GoRight()
 	        ::oHScroll:SetValue( ::oHScroll:GetValue() + 1 )
+
+      case nKey == K_SPACE
+           if AScan( ::aRowsChoosen, ( ::cAlias )->( OrdKeyNo() ) ) == 0
+              AAdd( ::aRowsChoosen, ( ::cAlias )->( OrdKeyNo() ) )
+           else
+              ADel( ::aRowsChoosen, AScan( ::aRowsChoosen, ( ::cAlias )->( OrdKeyNo() ) ) )   
+           endif   
+           ::DrawSelect()
    endcase
 
    if ! Empty( ::bKeyDown )
