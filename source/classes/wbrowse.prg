@@ -244,18 +244,31 @@ METHOD DrawLine( nRow, lSelected ) CLASS TWBrowse
               nCols := Len( ::aColumns )
    local hWnd := ::hWnd, nRowAct := ::nRowPos
    local lChoosen := AScan( ::aRowsChoosen, ( ::cAlias )->( OrdKeyNo() ) ) != 0
+   local oCol
 
    DEFAULT nRow := ::nRowPos, lSelected := .f.
 
    while nColPos < nWidth .and. n <= nCols
-      BrwDrawCell( hWnd, ( 20 * nRow ) + 1, nColPos,;
-         RTrim( cValToChar( Eval( ::aColumns[ n ]:bBlock ) ) ),;
-		   If( n == Len( ::aColumns ) .or. ;
-		   nColPos + ::aColumns[ n ]:nWidth > ::nWidth,;
-		   ::nWidth - nColPos - 1,;
-		   ::aColumns[ n ]:nWidth - 2 ), lSelected .and. ! lChoosen,;
-         If( ! lChoosen, If( ValType( ::nClrPane ) == "B", Eval( ::nClrPane, nRow, lSelected ), ::nClrPane ), ::nClrPaneChoosen ),;
-         If( ! lChoosen, If( ValType( ::nClrText ) == "B", Eval( ::nClrText, nRow, lSelected ), ::nClrText ), ::nClrTextChoosen ) )
+      oCol = ::aColumns[ n ]
+      if ! Empty( oCol:nClrPane )
+         BrwDrawCell( hWnd, ( 20 * nRow ) + 1, nColPos,;
+            RTrim( cValToChar( Eval( ::aColumns[ n ]:bBlock ) ) ),;
+            If( n == Len( ::aColumns ) .or. ;
+            nColPos + ::aColumns[ n ]:nWidth > ::nWidth,;
+            ::nWidth - nColPos - 1,;
+            ::aColumns[ n ]:nWidth - 2 ), lSelected .and. ! lChoosen,;
+            If( ! lChoosen, If( ValType( oCol:nClrPane ) == "B", Eval( oCol:nClrPane, nRow, lSelected ), oCol:nClrPane ), ::nClrPaneChoosen ),;
+            If( ! lChoosen, If( ValType( oCol:nClrText ) == "B", Eval( oCol:nClrText, nRow, lSelected ), oCol:nClrText ), ::nClrTextChoosen ) )
+      else   
+         BrwDrawCell( hWnd, ( 20 * nRow ) + 1, nColPos,;
+            RTrim( cValToChar( Eval( ::aColumns[ n ]:bBlock ) ) ),;
+            If( n == Len( ::aColumns ) .or. ;
+            nColPos + ::aColumns[ n ]:nWidth > ::nWidth,;
+            ::nWidth - nColPos - 1,;
+            ::aColumns[ n ]:nWidth - 2 ), lSelected .and. ! lChoosen,;
+            If( ! lChoosen, If( ValType( ::nClrPane ) == "B", Eval( ::nClrPane, nRow, lSelected ), ::nClrPane ), ::nClrPaneChoosen ),;
+            If( ! lChoosen, If( ValType( ::nClrText ) == "B", Eval( ::nClrText, nRow, lSelected ), ::nClrText ), ::nClrTextChoosen ) )
+      endif         
       nColPos += ::aColumns[ n++ ]:nWidth - 1
    end
 
