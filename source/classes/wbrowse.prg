@@ -243,7 +243,7 @@ METHOD DrawLine( nRow, lSelected ) CLASS TWBrowse
    local n := ::nColPos, nColPos := 1, nWidth := ::nWidth,;
               nCols := Len( ::aColumns )
    local hWnd := ::hWnd, nRowAct := ::nRowPos
-   local lChoosen := AScan( ::aRowsChoosen, ( ::cAlias )->( OrdKeyNo() ) ) != 0
+   local lChoosen := AScan( ::aRowsChoosen, If( ::cAlias != "ARRAY", ( ::cAlias )->( OrdKeyNo() ), ::nAt ) ) != 0
    local oCol
 
    DEFAULT nRow := ::nRowPos, lSelected := .f.
@@ -575,10 +575,18 @@ METHOD KeyDown( nKey ) CLASS TWBrowse
 	        ::oHScroll:SetValue( ::oHScroll:GetValue() + 1 )
 
       case nKey == K_SPACE
-           if AScan( ::aRowsChoosen, ( ::cAlias )->( OrdKeyNo() ) ) == 0
-              AAdd( ::aRowsChoosen, ( ::cAlias )->( OrdKeyNo() ) )
-           else
-              ADel( ::aRowsChoosen, AScan( ::aRowsChoosen, ( ::cAlias )->( OrdKeyNo() ) ) )   
+           if ::cAlias != "ARRAY"
+              if AScan( ::aRowsChoosen, ( ::cAlias )->( OrdKeyNo() ) ) == 0
+                 AAdd( ::aRowsChoosen, ( ::cAlias )->( OrdKeyNo() ) )
+              else
+                 ADel( ::aRowsChoosen, AScan( ::aRowsChoosen, ( ::cAlias )->( OrdKeyNo() ) ) )   
+              endif   
+           else   
+              if AScan( ::aRowsChoosen, ::nAt ) == 0
+                 AAdd( ::aRowsChoosen, ::nAt )
+              else
+                 ADel( ::aRowsChoosen, AScan( ::aRowsChoosen, ::nAt ) )  
+              endif   
            endif   
            ::DrawSelect()
    endcase
