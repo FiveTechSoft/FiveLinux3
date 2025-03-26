@@ -14,6 +14,8 @@ function Main()
       HEADERS "First", "Last", "Street", "City", "State", "Zip" ;
       FIELDS  First, Last, Street, City, State, Zip
 
+   oBrw:aColumns[ 1 ]:lBold = .T.
+   oBrw:aColumns[ 3 ]:lBold = .T.
    oBrw:aColumns[ 3 ]:nClrPane = { | nRow, lSelected | If( ! lSelected, If( OrdKeyNo() == 3, CLR_WHITE, CLR_CYAN ), CLR_BLUE ) } 
    oBrw:aColumns[ 3 ]:nClrText = { | nRow, lSelected | If( ! lSelected, If( OrdKeyNo() == 3, CLR_RED, CLR_BLUE ), CLR_BLUE ) } 
    oBrw:nClrPane = { | nRow, lSelected | If( ! lSelected, If( OrdKeyNo() % 2 == 0, CLR_HRED, CLR_CYAN ), CLR_BLUE ) } 
