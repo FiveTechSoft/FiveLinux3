@@ -10,6 +10,7 @@ CLASS TWBColumn
    DATA   oBrw       // container browse
    DATA   nClrText   // text color RGB color or codeblock 
    DATA   nClrPane   // background color RGB color or codeblock
+   DATA   lBold INIT .F.
 
    METHOD New( cHeading, bBlock, nWidth, oBrw )
 

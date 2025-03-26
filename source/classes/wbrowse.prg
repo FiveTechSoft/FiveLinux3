@@ -258,7 +258,8 @@ METHOD DrawLine( nRow, lSelected ) CLASS TWBrowse
             ::nWidth - nColPos - 1,;
             ::aColumns[ n ]:nWidth - 2 ), lSelected .and. ! lChoosen,;
             If( ! lChoosen, If( ValType( oCol:nClrPane ) == "B", Eval( oCol:nClrPane, nRow, lSelected ), oCol:nClrPane ), ::nClrPaneChoosen ),;
-            If( ! lChoosen, If( ValType( oCol:nClrText ) == "B", Eval( oCol:nClrText, nRow, lSelected ), oCol:nClrText ), ::nClrTextChoosen ) )
+            If( ! lChoosen, If( ValType( oCol:nClrText ) == "B", Eval( oCol:nClrText, nRow, lSelected ), oCol:nClrText ), ::nClrTextChoosen ),;
+            oCol:lBold )
       else   
          BrwDrawCell( hWnd, ( 20 * nRow ) + 1, nColPos,;
             RTrim( cValToChar( Eval( ::aColumns[ n ]:bBlock ) ) ),;
@@ -267,7 +268,8 @@ METHOD DrawLine( nRow, lSelected ) CLASS TWBrowse
             ::nWidth - nColPos - 1,;
             ::aColumns[ n ]:nWidth - 2 ), lSelected .and. ! lChoosen,;
             If( ! lChoosen, If( ValType( ::nClrPane ) == "B", Eval( ::nClrPane, nRow, lSelected ), ::nClrPane ), ::nClrPaneChoosen ),;
-            If( ! lChoosen, If( ValType( ::nClrText ) == "B", Eval( ::nClrText, nRow, lSelected ), ::nClrText ), ::nClrTextChoosen ) )
+            If( ! lChoosen, If( ValType( ::nClrText ) == "B", Eval( ::nClrText, nRow, lSelected ), ::nClrText ), ::nClrTextChoosen ),;
+            oCol:lBold )
       endif         
       nColPos += ::aColumns[ n++ ]:nWidth - 1
    end

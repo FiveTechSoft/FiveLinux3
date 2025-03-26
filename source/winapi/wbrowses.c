@@ -278,12 +278,12 @@ HB_FUNC( BRWROWCOUNT ) // ( hWnd )
    hb_retnl(allocation.height / 20);
 }
 
-HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColorBackGround )
+HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColorBackGround, nTextColor, lBold )
 {
    GtkWidget * hWnd = (GtkWidget *) hb_parptr(1);
    GdkRectangle cell_rect = { hb_parnl(3) - 1, hb_parnl(2) - 1,
                               hb_parnl(5), 19 }; 
-   PangoAttrList * attrs;
+   PangoAttrList * attrs = NULL; // Inicializar como NULL
    GtkStyleContext *context = gtk_widget_get_style_context(hWnd);
    
    GdkWindow *window = gtk_widget_get_window(hWnd);
@@ -344,25 +344,40 @@ HB_FUNC( BRWDRAWCELL ) // ( hWnd, nRow, nCol, cText, nWidth, lSelected, nRGBColo
    PangoLayout *layout = ((GtkBrowse *)hWnd)->layout;
    pango_layout_set_text(layout, hb_parc(4), -1);
 
-   if (hb_pcount() > 7 && !HB_ISNIL(8))
-    {
-      guint32 color = (guint32) hb_parnl(8);
-      GdkRGBA rgba;
-      rgba.red   = ((color >> 16) & 0xFF) / 255.0;
-      rgba.green = ((color >> 8) & 0xFF) / 255.0;
-      rgba.blue  = (color & 0xFF) / 255.0;
-      rgba.alpha = 1.0;
-
+   // Configurar atributos del texto (color y negrita)
+   if (hb_pcount() > 7 && (!HB_ISNIL(8) || (hb_pcount() > 8 && !HB_ISNIL(9))))
+   {
       attrs = pango_attr_list_new();
-      pango_attr_list_insert(attrs, pango_attr_foreground_new(rgba.red * 65535, rgba.green * 65535, rgba.blue * 65535));
+
+      // Color del texto (parámetro 8)
+      if (!HB_ISNIL(8))
+      {
+         guint32 color = (guint32) hb_parnl(8);
+         GdkRGBA rgba;
+         rgba.red   = ((color >> 16) & 0xFF) / 255.0;
+         rgba.green = ((color >> 8) & 0xFF) / 255.0;
+         rgba.blue  = (color & 0xFF) / 255.0;
+         rgba.alpha = 1.0;
+         pango_attr_list_insert(attrs, pango_attr_foreground_new(rgba.red * 65535, rgba.green * 65535, rgba.blue * 65535));
+      }
+
+      // Negrita (parámetro 9)
+      if (hb_pcount() > 8 && hb_parl(9)) // Si lBold es .T.
+      {
+         pango_attr_list_insert(attrs, pango_attr_weight_new(PANGO_WEIGHT_BOLD));
+      }
+
       pango_layout_set_attributes(layout, attrs);
    }
    else
+   {
       gdk_cairo_set_source_rgba(cr, &(GdkRGBA){0, 0, 0, 1}); // Color de texto negro por defecto
+   }
    
    gtk_render_layout(context, cr, cell_rect.x, cell_rect.y, layout);
 
-   if (hb_pcount() > 7 && !HB_ISNIL(8))
+   // Limpiar atributos si se usaron
+   if (attrs)
    {
       pango_attr_list_unref(attrs);
       pango_layout_set_attributes(layout, NULL);
