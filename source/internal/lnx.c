@@ -272,7 +272,7 @@ gboolean ButtonPressEvent(GtkWidget *hWnd, GdkEventButton *event)
    hb_vmPushLong((HB_ULONG)g_object_get_data(G_OBJECT(hWnd), "WP"));
    hb_vmFunction(4);
 
-   return FALSE;
+   return TRUE; // to avoid propagation to containers
 }
 
 gint ClickEvent(GtkWidget *hWnd, GdkEventButton *event)
