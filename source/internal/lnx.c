@@ -79,7 +79,7 @@ gint DeleteEvent( GtkWidget * hWnd, gpointer data )
    hb_vmPushLong( ( HB_ULONG ) g_object_get_data( G_OBJECT( hWnd ), "WP" ) );
    hb_vmFunction( 4 );
 
-   if( hWnd == hWndMain )
+   if( hb_parl( -1 ) && hWnd == hWndMain )
    {
       gtk_main_quit();
    }
