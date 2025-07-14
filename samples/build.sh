@@ -14,7 +14,7 @@ echo compiling C module...
 gcc $1.c -g -c -I./../include -I./../../harbour/include `pkg-config --cflags gtk+-3.0`
 
 echo linking...
-gcc $1.o -g -o$1 -L./../lib -L./../../harbour/lib/linux/gcc -Wl,--start-group -lfive -lfivec -lhbcommon -lhbvm -lhbrtl -lhbrdd -lhbmacro -lhblang -lhbcpage -lhbpp -lhbcplr -lrddntx -lrddcdx -lrddfpt -lhbsix -lhbusrrdd -lhbct -lgttrm -lhbdebug -lm -lncurses -lpcre `pkg-config --libs gtk+-3.0` -Wl,--end-group
+gcc $1.o -g -o$1 -L./../lib -L./../../harbour/lib/linux/gcc -Wl,--start-group -lfive -lfivec -lhbcommon -lhbvm -lhbrtl -lhbrdd -lhbmacro -lhblang -lhbcpage -lhbpp -lhbcplr -lrddntx -lrddcdx -lrddfpt -lhbsix -lhbusrrdd -lhbct -lgttrm -lhbdebug -lm -lncurses -lpcre -lxhb `pkg-config --libs gtk+-3.0` -Wl,--end-group
 
 rm $1.c
 rm $1.o
