@@ -1208,7 +1208,11 @@ function FW_RecToHash( cFieldList, cNames )
    local hRec     := {=>}
    local aVals, aNames
 
-   HSetCaseMatch( hRec, .f. )
+   #ifdef __XHARBOUR__
+      HSetCaseMatch( hRec, .f. )
+   #else   
+      hb_HSetCaseMatch( hRec, .f. )
+   #endif   
 
    if Empty( cFieldList )
       cFieldList  := ""
@@ -1219,7 +1223,11 @@ function FW_RecToHash( cFieldList, cNames )
    aNames            := HB_ATokens( cNames, ',' )
 
    aVals    := &( '{' + cFieldList + '}' )
-   AEval( aVals, { |u,i| hSet( hRec, aNames[ i ], u ) },, Len( aNames ) )
+   #ifdef __XHARBOUR__
+      AEval( aVals, { |u,i| hSet( hRec, aNames[ i ], u ) },, Len( aNames ) )
+   #else
+      AEval( aVals, { |u,i| hb_hSet( hRec, aNames[ i ], u ) },, Len( aNames ) )
+   #endif   
 
 return hRec
 
@@ -1237,10 +1245,19 @@ function FW_HashToRec( hRec, cFieldList )
       ( lLocked   := DbrLock( RecNo() ) )
 
       if Empty( cFieldList )
-         HEval( hRec, { |k,v,i| FieldPut( FieldPos( k ), v ) } )
+         #ifdef __XHARBOUR__
+            HEval( hRec, { |k,v,i| FieldPut( FieldPos( k ), v ) } )
+         #else
+            hb_HEval( hRec, { |k,v,i| FieldPut( FieldPos( k ), v ) } )
+         #endif   
+
       else
          aFlds    := HB_ATokens( cFieldList, ',' )
-         HEval( hRec, { |k,v,i| FieldPut( FieldPos( aFlds[ i ] ), v ) },, Len( aFlds ) )
+         #ifdef __XHARBOUR__
+            HEval( hRec, { |k,v,i| FieldPut( FieldPos( aFlds[ i ] ), v ) },, Len( aFlds ) )
+         #else   
+            hb_HEval( hRec, { |k,v,i| FieldPut( FieldPos( aFlds[ i ] ), v ) },, Len( aFlds ) )
+         #endif   
       endif
 
       if lLocked
