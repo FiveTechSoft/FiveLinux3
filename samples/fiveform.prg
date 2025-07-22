@@ -474,9 +474,9 @@ return Self
 METHOD BuildBrwProps() CLASS TInspector
 
    @ 75, 14 BROWSE ::oBrwProps ;
-      FIELDS ::oCtrl:aProperties[ ::oBrwProps:nArrayAt ],;
+      FIELDS ::oCtrl:aProperties[ ::oBrwProps:nAt ],;
              cValToChar( __ObjSendMsg( ::oCtrl,;
-                         ::oCtrl:aProperties[ ::oBrwProps:nArrayAt ] ) ) ;
+                         ::oCtrl:aProperties[ ::oBrwProps:nAt ] ) ) ;
       HEADERS "Data", "Value" ;
       SIZE 240, 240 PIXEL OF ::oFld:aDialogs[ 1 ]
 
