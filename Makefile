@@ -39,6 +39,7 @@ PRG_OBJS = ./obj/bar.o        \
 	   ./obj/say.o        \
 	   ./obj/scrollbar.o  \
 	   ./obj/timer.o      \
+           ./obj/tkimi.o      \
 	   ./obj/valblank.o   \
 	   ./obj/valtostr.o   \
 	   ./obj/wbrowse.o    \
